@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { ChakraProvider, Box, theme } from '@chakra-ui/react'
+import { ChakraProvider, Box } from '@chakra-ui/react'
+import { theme } from './common/theme'
 import { UseWalletProvider } from 'use-wallet'
 import defaults from './common/defaults'
 import { Header } from './components/Header'
