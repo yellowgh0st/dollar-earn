@@ -16,7 +16,7 @@ export const Header = () => {
 			<Spacer />
 			<Flex w="33%" justifyContent='flex-end'>
 				<WalletConnectionToggle />
-				<ColorModeSwitcher />
+				<ColorModeSwitcher marginLeft='0.6rem' />
 			</Flex>
 		</Flex>
 	)
