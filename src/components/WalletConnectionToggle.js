@@ -12,7 +12,10 @@ export const WalletConnectionToggle = (props) => {
 	const text = 'Connect a wallet'
 
 	const toggle = () => {
-		if (wallet.status !== 'connected') wallet.connect('injected').catch(console.log)
+		if (wallet.status !== 'connected') {
+			wallet.connect('injected')
+				.catch(console.log)
+		}
 	}
 
 	useEffect(() => {
