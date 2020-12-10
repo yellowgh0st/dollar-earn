@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import { Heading, Grid, Flex, Stat, StatLabel, StatNumber, Tag, TagLabel, useBreakpointValue } from '@chakra-ui/react'
+import {
+	Heading, Grid, Flex, Stat, StatLabel, StatNumber, Tag, TagLabel, useBreakpointValue,
+	useColorModeValue,
+} from '@chakra-ui/react'
 import { prettifyCurrency } from '../common/utils'
 
 export const PoolCards = (props) => {
@@ -19,6 +22,9 @@ export const PoolCards = (props) => {
 		xs: 'repeat(1, 1fr)',
 		md: `repeat(${columns}, 1fr)`,
 	})
+
+	const background = useColorModeValue('#EDF2F7', '#00D661')
+	const color = useColorModeValue('#000000', '#000000')
 
 	useEffect(() => {
 		const fetch = async () => {
@@ -49,11 +55,18 @@ export const PoolCards = (props) => {
 								  flexDirection='column'
 								  borderRadius='23px'
 								  p='2.4rem 2.4rem 4.1rem'
-								  bg='#EDF2F7'>
-								<Heading textStyle='h2'size='lg'>{pool.name}</Heading>
+								  bg={background}>
+								<Heading textStyle='h2'
+										 size='lg'
+										 color={color}>
+									{pool.name}
+								</Heading>
 								<Stat>
-									<StatLabel textStyle='body'>Total value locked</StatLabel>
+									<StatLabel textStyle='body'
+											   color={color}
+									>Total value locked</StatLabel>
 									<StatNumber textStyle='body'
+										color={color}
 										fontSize={{ base: 'xs', sm: 'lg', lg: 'xl' }}>
 										{prettifyCurrency(pool.totalValueLockedInUSD)}
 									</StatNumber>
@@ -62,7 +75,9 @@ export const PoolCards = (props) => {
 									 fontSize='1rem'
 									 justifyContent='flex-end'
 									 alignItems='flex-start'
-									 bg="transparent">
+									 bg="transparent"
+									 color={color}
+								>
 									<TagLabel>earn</TagLabel>
 									<span style={{ marginLeft: '7px' }}>⟶</span>
 								</Tag>
