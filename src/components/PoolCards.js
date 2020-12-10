@@ -55,7 +55,9 @@ export const PoolCards = (props) => {
 								  flexDirection='column'
 								  borderRadius='23px'
 								  p='2.4rem 2.4rem 4.1rem'
-								  bg={background}>
+								  bg={background}
+								  style={{ cursor: 'pointer' }}
+							>
 								<Heading textStyle='h2'
 										 size='lg'
 										 color={color}>
@@ -72,14 +74,15 @@ export const PoolCards = (props) => {
 									</StatNumber>
 								</Stat>
 								<Tag size='md'
-									 fontSize='1rem'
+									 fontSize='1.1rem'
+									 fontWeight='600'
 									 justifyContent='flex-end'
 									 alignItems='flex-start'
 									 bg="transparent"
 									 color={color}
 								>
 									<TagLabel>earn</TagLabel>
-									<span style={{ marginLeft: '7px' }}>⟶</span>
+									<span style={{ marginLeft: '7px', fontSize: '1.2rem', fontWeight: '600' }}>⟶</span>
 								</Tag>
 							</Flex>
 						)
