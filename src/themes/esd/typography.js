@@ -1,15 +1,18 @@
 export default {
+	body: {
+		fontFamily: 'Body',
+	},
 	h1: {
 		fontFamily: 'Headline',
-		lineHeight: '6.1rem',
+		margin: '2rem 0',
 	},
 	h2: {
 		fontFamily: 'Headline',
-		lineHeight: '6.1rem',
+		margin: '2rem 0',
 	},
 	h3: {
 		fontFamily: 'Headline',
-		lineHeight: '3.1rem',
+		margin: '1rem 0',
 	},
 	h4: {
 		fontFamily: 'Headline',

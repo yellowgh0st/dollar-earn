@@ -20,7 +20,8 @@ const App = () => {
 						 mx={{ base: '0.5rem', sm: '1rem', md: '2.5rem', lg: '13rem' }}
 						 p={3}>
 						<Header width='100%'
-							my='1.2rem'
+							marginTop='1.2rem'
+							marginBottom='3.2rem'
 							justifyContent='center' />
 						<Route path='/' exact component={Home} />
 						<Footer h='7vh' justifyContent='center' />

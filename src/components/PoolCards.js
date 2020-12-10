@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import { Heading, Grid, GridItem, Stat, StatLabel, StatNumber } from '@chakra-ui/react'
+import { Heading, Grid, Flex, Stat, StatLabel, StatNumber, Tag, TagLabel } from '@chakra-ui/react'
 import { prettifyCurrency } from '../common/utils'
 
 export const PoolCards = (props) => {
@@ -12,6 +12,8 @@ export const PoolCards = (props) => {
 
 	const [pools, setPools] = useState({})
 	const [loading, setLoading] = useState(true)
+
+	const [columns, setColumns] = useState(2)
 
 	useEffect(() => {
 		const fetch = async () => {
@@ -24,30 +26,42 @@ export const PoolCards = (props) => {
 			setLoading(false)
 		}
 		fetch()
+		setColumns(2)
 	}, [])
 
 	return (
 		<Grid
-			h='400px'
+			minHeight='400px'
 			m='0px auto 1.2rem auto'
-			templateColumns='repeat(2, 1fr)'
-			gap={{ base: 25, sm: 25, lg: 50 }}
+			templateColumns={`repeat(${columns}, 1fr)`}
+			gap={{ base: 33.5, sm: 33.5, lg: 67 }}
 		>
 			{!loading &&
 				<>
 					{pools.data.map((pool, index) => {
 						return (
-							<GridItem key={index}
-									  borderRadius='23px'
-									  colSpan={1}
-									  p='0 2.4rem'
-									  bg='#EDF2F7'>
-								<Heading textStyle='h2'size='md'>{pool.name}</Heading>
+							<Flex key={index}
+								  flexDirection='column'
+								  borderRadius='23px'
+								  p='2.4rem 2.4rem 4.1rem'
+								  bg='#EDF2F7'>
+								<Heading textStyle='h2'size='lg'>{pool.name}</Heading>
 								<Stat>
-									<StatLabel>Total value locked</StatLabel>
-									<StatNumber>{prettifyCurrency(pool.totalValueLockedInUSD)}</StatNumber>
+									<StatLabel textStyle='body'>Total value locked</StatLabel>
+									<StatNumber textStyle='body'
+										fontSize={{ base: 'xs', sm: 'lg', lg: 'xl' }}>
+										{prettifyCurrency(pool.totalValueLockedInUSD)}
+									</StatNumber>
 								</Stat>
-							</GridItem>
+								<Tag size='md'
+									 fontSize='1rem'
+									 justifyContent='flex-end'
+									 alignItems='flex-start'
+									 colorScheme="transparent">
+									<TagLabel>earn</TagLabel>
+									<span style={{ marginLeft: '7px' }}>⟶</span>
+								</Tag>
+							</Flex>
 						)
 					})}
 				</>
