@@ -11,7 +11,7 @@ const Home = () => {
 
 	useEffect(() => {
 		const fetch = async () => {
-			const data = await axios.get(defaults.api.esd.pools, {
+			const data = await axios.get('https://cors-anywhere.herokuapp.com/' + defaults.api.esd.pools, {
 				headers: {
 					'Access-Control-Allow-Origin' : '*',
 				},
