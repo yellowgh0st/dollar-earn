@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import { Heading, Grid, Flex, Stat, StatLabel, StatNumber, Tag, TagLabel } from '@chakra-ui/react'
+import { Heading, Grid, Flex, Stat, StatLabel, StatNumber, Tag, TagLabel, useBreakpointValue } from '@chakra-ui/react'
 import { prettifyCurrency } from '../common/utils'
 
 export const PoolCards = (props) => {
@@ -13,7 +13,12 @@ export const PoolCards = (props) => {
 	const [pools, setPools] = useState({})
 	const [loading, setLoading] = useState(true)
 
-	const [columns, setColumns] = useState(2)
+	const [columns, setColumns] = useState(0)
+	const templateColumns = useBreakpointValue({
+		base: 'repeat($1, 1fr)',
+		xs: 'repeat(1, 1fr)',
+		md: `repeat(${columns}, 1fr)`,
+	})
 
 	useEffect(() => {
 		const fetch = async () => {
@@ -33,7 +38,7 @@ export const PoolCards = (props) => {
 		<Grid
 			minHeight='400px'
 			m='0px auto 1.2rem auto'
-			templateColumns={`repeat(${columns}, 1fr)`}
+			templateColumns={templateColumns}
 			gap={{ base: 33.5, sm: 33.5, lg: 67 }}
 		>
 			{!loading &&
@@ -57,7 +62,7 @@ export const PoolCards = (props) => {
 									 fontSize='1rem'
 									 justifyContent='flex-end'
 									 alignItems='flex-start'
-									 colorScheme="transparent">
+									 bg="transparent">
 									<TagLabel>earn</TagLabel>
 									<span style={{ marginLeft: '7px' }}>⟶</span>
 								</Tag>
