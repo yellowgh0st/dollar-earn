@@ -23,8 +23,8 @@ export const PoolCards = (props) => {
 		md: `repeat(${columns}, 1fr)`,
 	})
 
-	const background = useColorModeValue('#EDF2F7', '#00D661')
-	const color = useColorModeValue('#000000', '#000000')
+	const background = useColorModeValue('#E0DEFF', '#00D661')
+	const color = useColorModeValue('#231f20', '#000000')
 
 	useEffect(() => {
 		const fetch = async () => {
@@ -42,7 +42,7 @@ export const PoolCards = (props) => {
 
 	return (
 		<Grid
-			minHeight='400px'
+			minHeight='435px'
 			m='0px auto 1.2rem auto'
 			templateColumns={templateColumns}
 			gap={{ base: 33.5, sm: 33.5, lg: 67 }}
@@ -53,8 +53,8 @@ export const PoolCards = (props) => {
 						return (
 							<Flex key={index}
 								  flexDirection='column'
-								  borderRadius='23px'
-								  p='2.4rem 2.4rem 4.1rem'
+								  borderRadius='43px'
+								  p='2.4rem 3.2rem 5.1rem'
 								  bg={background}
 								  style={{ cursor: 'pointer' }}
 							>
@@ -85,8 +85,10 @@ export const PoolCards = (props) => {
 									<Button bg='transparent'
 										_hover={{ bg: 'transparent' }}
 										color={color}
+										fontSize='1.2rem'
+										fontWeight='600'
 									>
-										earn<span style={{ marginLeft: '7px', fontSize: '1.2rem', fontWeight: '600' }}>⟶</span>
+										earn<span style={{ marginLeft: '7px' }}>⟶</span>
 									</Button>
 								</Tag>
 							</Flex>
