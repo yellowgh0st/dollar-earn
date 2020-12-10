@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import {
-	Heading, Grid, Flex, Stat, StatLabel, StatNumber, Tag, TagLabel, useBreakpointValue,
+	Heading, Grid, Flex, Stat, StatLabel, StatNumber, Tag, Button, useBreakpointValue,
 	useColorModeValue,
 } from '@chakra-ui/react'
 import { prettifyCurrency } from '../common/utils'
@@ -78,11 +78,16 @@ export const PoolCards = (props) => {
 									 fontWeight='600'
 									 justifyContent='flex-end'
 									 alignItems='flex-start'
-									 bg="transparent"
+									 bg='transparent'
+									 p='0'
 									 color={color}
 								>
-									<TagLabel>earn</TagLabel>
-									<span style={{ marginLeft: '7px', fontSize: '1.2rem', fontWeight: '600' }}>⟶</span>
+									<Button bg='transparent'
+										_hover={{ bg: 'transparent' }}
+										color={color}
+									>
+										earn<span style={{ marginLeft: '7px', fontSize: '1.2rem', fontWeight: '600' }}>⟶</span>
+									</Button>
 								</Tag>
 							</Flex>
 						)
