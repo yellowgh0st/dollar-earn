@@ -22,6 +22,11 @@ export const PoolCards = (props) => {
 		xs: 'repeat(1, 1fr)',
 		md: `repeat(${columns}, 1fr)`,
 	})
+	const cardPadding = useBreakpointValue({
+		base: '0.4rem 3.2rem 2.1rem',
+		xs: '0.4rem 3.2rem 2.1rem',
+		md: '2.4rem 3.2rem 5.1rem',
+	})
 
 	const background = useColorModeValue('#E0DEFF', '#00D661')
 	const color = useColorModeValue('#231f20', '#000000')
@@ -54,7 +59,7 @@ export const PoolCards = (props) => {
 							<Flex key={index}
 								  flexDirection='column'
 								  borderRadius='43px'
-								  p='2.4rem 3.2rem 5.1rem'
+								  p={cardPadding}
 								  bg={background}
 								  style={{ cursor: 'pointer' }}
 							>
