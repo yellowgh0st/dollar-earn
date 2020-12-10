@@ -50,7 +50,7 @@ export const PoolCards = (props) => {
 			minHeight='435px'
 			m='0px auto 1.2rem auto'
 			templateColumns={templateColumns}
-			gap={{ base: 33.5, sm: 33.5, lg: 67 }}
+			gap={{ base: 36.5, sm: 84 }}
 		>
 			{!loading &&
 				<>
