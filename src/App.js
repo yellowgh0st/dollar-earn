@@ -28,9 +28,9 @@ const App = () => {
 							marginBottom='3.2rem'
 							justifyContent='center' />
 						<Switch>
-							<Route path='/' exact render={() => (
-								<Home data={data} loading={loading} error={error} />
-							)}/>
+							<Route path='/' exact render={() =>
+								<Home data={data} loading={loading} error={error} />}
+							/>
 							<Route render={() => <Redirect to="/" />} />
 						</Switch>
 						<Footer h='7vh' justifyContent='center' />
