@@ -1,6 +1,6 @@
 import React from 'react'
 import defaults from './common/defaults'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ChakraProvider, Box } from '@chakra-ui/react'
 import useFetch from 'use-http'
 import { getPoolLocation } from './common/utils'
@@ -50,8 +50,6 @@ const App = () => {
 										   )}/>
 								)
 							})}
-
-							<Route render={() => <Redirect to="/" />} />
 						</Switch>
 						<Footer h='7vh' justifyContent='center' />
 					</Box>
