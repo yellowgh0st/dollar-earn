@@ -19,7 +19,7 @@ const App = () => {
 				<UseWalletProvider
 					chainId={defaults.network.chainId}
 					connectors={defaults.network.connectors}>
-					<Box h='93vh'
+					<Box h='100vh'
 						 justifyContent='center'
 						 mx={{ base: '0.5rem', sm: '1rem', md: '2.5rem', lg: '13rem' }}
 						 p={3}>
