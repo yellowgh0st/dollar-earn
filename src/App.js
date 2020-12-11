@@ -1,7 +1,8 @@
 import React from 'react'
 import defaults from './common/defaults'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ChakraProvider, Box } from '@chakra-ui/react'
+import useFetch from 'use-http'
 import esd from './themes/esd'
 import { UseWalletProvider } from 'use-wallet'
 import { Header } from './components/Header'
@@ -9,6 +10,9 @@ import { Footer } from './components/Footer'
 import Home from './locations/home'
 
 const App = () => {
+
+	const { loading, error, data = [] } = useFetch(defaults.api.esd.pools, {}, [])
+
 	return (
 		<Router>
 			<ChakraProvider theme={esd}>
@@ -23,7 +27,11 @@ const App = () => {
 							marginTop='1.2rem'
 							marginBottom='3.2rem'
 							justifyContent='center' />
-						<Route path='/' exact component={Home} />
+						<Switch>
+							<Route path='/' exact render={() => (
+								<Home data={data} loading={loading} error={error} />
+							)}/>
+						</Switch>
 						<Footer h='7vh' justifyContent='center' />
 					</Box>
 				</UseWalletProvider>
