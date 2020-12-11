@@ -3,11 +3,16 @@ import defaults from './common/defaults'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { ChakraProvider, Box } from '@chakra-ui/react'
 import useFetch from 'use-http'
+import { getPoolLocation } from './common/utils'
+
 import esd from './themes/esd'
 import { UseWalletProvider } from 'use-wallet'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
+
 import Home from './locations/home'
+import Pool from './locations/pool'
+
 
 const App = () => {
 
@@ -27,10 +32,25 @@ const App = () => {
 							marginTop='1.2rem'
 							marginBottom='3.2rem'
 							justifyContent='center' />
+
 						<Switch>
 							<Route path='/' exact render={() =>
 								<Home data={data} loading={loading} error={error} />}
 							/>
+
+							{data.map((pool, index) => {
+								return (
+									<Route key={index}
+										   path={getPoolLocation(
+										   	   pool.collateral[0],
+											   pool.collateral[1],
+										   )}
+										   exact render={() => (
+										   		<Pool name={pool.name} loading={loading} error={error} />
+										   )}/>
+								)
+							})}
+
 							<Route render={() => <Redirect to="/" />} />
 						</Switch>
 						<Footer h='7vh' justifyContent='center' />

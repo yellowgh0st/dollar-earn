@@ -27,5 +27,8 @@ const prettifyCurrency = (amount, minFractionDigits = 0, maxFractionDigits = 2, 
 	return (cryptocurrency ? `${currencyValue.format(amount)}${String.fromCharCode(160)}${symbol}` : currencyValue.format(amount))
 }
 
+const getPoolLocation = (collateralA = '', collateralB = '') => {
+	return `/${collateralA}${collateralB ? `/${collateralB}` : ''}`
+}
 
-export { prettifyAddress, prettifyCurrency }
+export { prettifyAddress, prettifyCurrency, getPoolLocation }

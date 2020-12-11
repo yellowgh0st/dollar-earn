@@ -5,7 +5,7 @@ import {
 	Heading, Grid, Fade, Flex, Stat, StatLabel, StatNumber, Tag, Button, useBreakpointValue,
 	useColorModeValue,
 } from '@chakra-ui/react'
-import { prettifyCurrency } from '../common/utils'
+import { prettifyCurrency, getPoolLocation } from '../common/utils'
 
 export const PoolCards = (props) => {
 
@@ -44,7 +44,8 @@ export const PoolCards = (props) => {
 						gap={{ base: 36.5, sm: 84 }}
 					>					{props.pools.map((pool, index) => {
 							return (
-								<Link to={`${pool.collateral[0]}/${pool.collateral[1]}`} key={index}>
+								<Link to={getPoolLocation(pool.collateral[0], pool.collateral[1])}
+									  key={index}>
 									<Flex
 										flexDirection='column'
 										borderRadius='43px'
