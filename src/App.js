@@ -1,8 +1,7 @@
 import React from 'react'
 import defaults from './common/defaults'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { ChakraProvider, Box } from '@chakra-ui/react'
-import useFetch from 'use-http'
 import { getPoolLocation } from './common/utils'
 
 import esd from './themes/esd'
@@ -13,10 +12,9 @@ import { Footer } from './components/Footer'
 import Home from './locations/home'
 import Pool from './locations/pool'
 
+import data from './data/pools.json'
 
 const App = () => {
-
-	const { loading, error, data = [] } = useFetch(defaults.api.esd.pools, {}, [])
 
 	return (
 		<Router>
@@ -35,7 +33,7 @@ const App = () => {
 
 						<Switch>
 							<Route path='/' exact render={() =>
-								<Home data={data} loading={loading} error={error} />}
+								<Home data={data} />}
 							/>
 
 							{data.map((pool, index) => {
@@ -46,10 +44,14 @@ const App = () => {
 											   pool.collateral[1],
 										   )}
 										   exact render={() => (
-										   		<Pool name={pool.name} loading={loading} error={error} />
+										   		<Pool name={pool.name} />
 										   )}/>
 								)
 							})}
+
+							<Route path='*' render={() => (
+								<Redirect to={'/'} />
+							)} />
 						</Switch>
 						<Footer h='7vh' justifyContent='center' />
 					</Box>
