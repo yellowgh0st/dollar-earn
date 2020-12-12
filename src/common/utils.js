@@ -27,8 +27,27 @@ const prettifyCurrency = (amount, minFractionDigits = 0, maxFractionDigits = 2, 
 	return (cryptocurrency ? `${currencyValue.format(amount)}${String.fromCharCode(160)}${symbol}` : currencyValue.format(amount))
 }
 
+const prettifyNumber = (amount, minFractionDigits = 0, maxFractionDigits = 0, locales = 'en-US') => {
+	const options = {
+		minimumFractionDigits: minFractionDigits,
+		maximumFractionDigits: maxFractionDigits,
+	}
+	const value = isFinite(amount) ? amount : 0
+	return (new Intl.NumberFormat(locales, options).format(value))
+}
+
+const getPercentage = (amount, minFractionDigits = 0, maxFractionDigits = 2, locales = 'en-US') => {
+	const options = {
+		style: 'percent',
+		minimumFractionDigits: minFractionDigits,
+		maximumFractionDigits: maxFractionDigits,
+	}
+	const value = isFinite(amount) ? amount : 0
+	return (new Intl.NumberFormat(locales, options).format(value))
+}
+
 const getPoolLocation = (collateralA = '', collateralB = '') => {
 	return `/${collateralA}${collateralB ? `/${collateralB}` : ''}`
 }
 
-export { prettifyAddress, prettifyCurrency, getPoolLocation }
+export { prettifyAddress, prettifyCurrency, prettifyNumber, getPercentage, getPoolLocation }

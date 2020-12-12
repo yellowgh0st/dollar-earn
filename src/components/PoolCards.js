@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import {
-	Heading, Grid, Fade, Flex, Stat, StatLabel, StatNumber, Tag, Button, useBreakpointValue,
-	useColorModeValue,
+	Heading, Grid, Fade, Flex, Box, Stat, StatLabel, StatNumber, Tag, Button, useBreakpointValue,
+	useColorModeValue, Image,
 } from '@chakra-ui/react'
-import { prettifyCurrency, getPoolLocation } from '../common/utils'
+import { prettifyCurrency, prettifyNumber, getPoolLocation } from '../common/utils'
 
 export const PoolCards = (props) => {
 
@@ -54,12 +54,25 @@ export const PoolCards = (props) => {
 										minH={cardMinHeight}
 										style={{ cursor: 'pointer' }}
 									>
-										<Heading textStyle='h2'
-											size='lg'
-											maxWidth='175px'
-											color={color}>
-											{pool.name}
-										</Heading>
+										<Box>
+											<Heading textStyle='h2'
+													 size='lg'
+													 float='left'
+													 margin='2rem 0 1.3rem'
+													 maxWidth='175px'
+													 color={color}>
+												{pool.name}
+											</Heading>
+											<Image width='32px'
+												   float='right'
+												   marginTop='0.8rem'
+												   alt={`${pool.name} Collateral Icon`}
+												   src={`
+											${window.location}svg/tokens/
+											${pool.collateral[1] ? pool.collateral[1] : pool.collateral[0]}/index.svg
+										`}
+											/>
+										</Box>
 										<Stat>
 											<StatLabel textStyle='body'
 												color={color}
@@ -69,6 +82,17 @@ export const PoolCards = (props) => {
 												fontWeight='bold'
 												fontSize={{ base: 'xs', sm: '1.3rem', lg: '1.3rem' }}>
 												{prettifyCurrency(pool.totalValueLockedInUSD, 0, 0)}
+											</StatNumber>
+										</Stat>
+										<Stat>
+											<StatLabel textStyle='body'
+													   color={color}
+											>APY</StatLabel>
+											<StatNumber textStyle='body'
+												color={color}
+												fontWeight='bold'
+												fontSize={{ base: 'xs', sm: '1.3rem', lg: '1.3rem' }}>
+												{`${prettifyNumber(pool.apy, 0, 0)}%`}
 											</StatNumber>
 										</Stat>
 										<Tag size='md'

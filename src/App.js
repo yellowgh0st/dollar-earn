@@ -12,7 +12,7 @@ import { Footer } from './components/Footer'
 import Home from './locations/home'
 import Pool from './locations/pool'
 
-import data from './data/pools.json'
+import data from '../data/pools.json'
 
 const App = () => {
 
