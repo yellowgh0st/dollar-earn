@@ -3,6 +3,8 @@ import typography from './typography'
 import { mode } from '@chakra-ui/theme-tools'
 
 const overrides = {
+	useSystemColorMode: false,
+	initialColorMode: 'dark',
 	styles: {
 		global: props => ({
 			body: {

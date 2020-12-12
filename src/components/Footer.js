@@ -3,7 +3,7 @@ import { Flex, Stack } from '@chakra-ui/react'
 
 export const Footer = (props) => {
 	return (
-		<Flex {...props}>
+		<Flex {...props} m='calc(3.2rem - 21px) 0'>
 			<Stack direction={['row']}
 				   spacing='24px'
 				   m='auto 0'
