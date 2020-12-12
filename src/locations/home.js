@@ -16,7 +16,7 @@ const Home = (props) => {
 		<Box maxW='768px' m='0 auto'>
 			<Text>
 				<span style={{ fontSize: '2rem' }}>Welcome to </span><Heading as='h1' textStyle='h1' display='inline'>Empty&nbsp;set&nbsp;døllar.</Heading>
-				<span style={{ display: 'block', fontSize: '1.2rem', marginBottom: '3.2rem' }}>Built to be the reserve currency of Decentralized Finance.</span>
+				<span style={{ display: 'block', fontSize: '1.2rem', marginBottom: '3.2rem' }}>Built to be the reserve currency of&nbsp;Decentralized Finance.</span>
 			</Text>
 			<Heading textStyle='h2' size='lg'>Reward Pools</Heading>
 			{props.error &&
@@ -25,7 +25,7 @@ const Home = (props) => {
 			{props.loading &&
 				<Text align='center'>Loading...</Text>
 			}
-			<PoolCards pools={props.data} loading={props.loading} />
+			<PoolCards pools={props.data} loading={props.loading} error={props.error} />
 		</Box>
 	)
 }

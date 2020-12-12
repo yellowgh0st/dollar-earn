@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import defaults from './common/defaults'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { ChakraProvider, Box } from '@chakra-ui/react'
+import useFetch from 'use-http'
 import { getPoolLocation } from './common/utils'
-
 import esd from './themes/esd'
 import { UseWalletProvider } from 'use-wallet'
 import { Header } from './components/Header'
@@ -12,9 +12,32 @@ import { Footer } from './components/Footer'
 import Home from './locations/home'
 import Pool from './locations/pool'
 
-import data from '../data/pools.json'
+import initPools from '../data/pools.json'
 
 const App = () => {
+
+	const [pools, setPools] = useState(initPools)
+	const [loaded, setLoaded] = useState(true)
+	const [err, setErr] = useState(null)
+	const { get, response, error, loading } = useFetch(defaults.api.esd)
+
+	useEffect(() => {
+		getPools()
+	}, [])
+
+	const getPools = async () => {
+		const data = await get('pools')
+		setLoaded(loading)
+		if (response.ok) {
+			setPools(data)
+			setLoaded(loading)
+		}
+		else {
+			setErr(error)
+			setPools(initPools)
+			setLoaded(loading)
+		}
+	}
 
 	return (
 		<Router>
@@ -33,10 +56,10 @@ const App = () => {
 
 						<Switch>
 							<Route path='/' exact render={() =>
-								<Home data={data} />}
+								<Home data={pools} loading={loaded} error={err} />}
 							/>
 
-							{data.map((pool, index) => {
+							{pools.map((pool, index) => {
 								return (
 									<Route key={index}
 										   path={getPoolLocation(

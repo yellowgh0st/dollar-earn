@@ -2,7 +2,7 @@ const defaults = {}
 
 defaults.api = {}
 defaults.api.esd = {}
-defaults.api.esd.pools = 'https://cors-anywhere.herokuapp.com/https://esd.tools/api/pools'
+defaults.api.esd = 'https://cors-anywhere.herokuapp.com/https://esd.tools/api/'
 
 defaults.network = {}
 defaults.network.chainId = 1

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import {
 	Heading, Grid, Fade, Flex, Box, Stat, StatLabel, StatNumber, Tag, Button, useBreakpointValue,
-	useColorModeValue, Image,
+	useColorModeValue, Img,
 } from '@chakra-ui/react'
 import { prettifyCurrency, prettifyNumber, getPoolLocation } from '../common/utils'
 
@@ -11,7 +11,8 @@ export const PoolCards = (props) => {
 
 	PoolCards.propTypes = {
 		pools: PropTypes.array.isRequired,
-		loading: PropTypes.bool.isRequired,
+		loading: PropTypes.bool,
+		error: PropTypes.object,
 	}
 
 	const [columns] = useState(2)
@@ -29,6 +30,12 @@ export const PoolCards = (props) => {
 		base: '0',
 		xs: '0',
 		md: '435px',
+	})
+	// eslint-disable-next-line no-unused-vars
+	const iconMarginTop = useBreakpointValue({
+		base: '1.6rem',
+		xs: '1.6rem',
+		md: '0.8rem',
 	})
 
 	const background = useColorModeValue('#E0DEFF', '#00D661')
@@ -63,10 +70,10 @@ export const PoolCards = (props) => {
 													 color={color}>
 												{pool.name}
 											</Heading>
-											<Image width='32px'
-												   float='right'
-												   marginTop='0.8rem'
+											<Img width='32px'
 												   alt={`${pool.name} Collateral Icon`}
+												   marginTop={iconMarginTop}
+												   float={'right'}
 												   src={`
 											${window.location}svg/tokens/
 											${pool.collateral[1] ? pool.collateral[1] : pool.collateral[0]}/index.svg
