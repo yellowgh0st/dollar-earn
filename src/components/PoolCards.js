@@ -80,6 +80,7 @@ export const PoolCards = (props) => {
 										`}
 											/>
 										</Box>
+
 										<Stat>
 											<StatLabel textStyle='body'
 												color={color}
@@ -91,17 +92,21 @@ export const PoolCards = (props) => {
 												{prettifyCurrency(pool.totalValueLockedInUSD, 0, 0)}
 											</StatNumber>
 										</Stat>
-										<Stat>
-											<StatLabel textStyle='body'
-													   color={color}
-											>APY</StatLabel>
-											<StatNumber textStyle='body'
-												color={color}
-												fontWeight='bold'
-												fontSize={{ base: 'xs', sm: '1.3rem', lg: '1.3rem' }}>
-												{`${prettifyNumber(pool.apy, 0, 0)}%`}
-											</StatNumber>
-										</Stat>
+
+										{pool.apy > 0 &&
+											<Stat>
+												<StatLabel textStyle='body'
+														   color={color}
+												>APY</StatLabel>
+												<StatNumber textStyle='body'
+													color={color}
+													fontWeight='bold'
+													fontSize={{ base: 'xs', sm: '1.3rem', lg: '1.3rem' }}>
+													{`${prettifyNumber(pool.apy, 0, 0)}%`}
+												</StatNumber>
+											</Stat>
+										}
+
 										<Tag size='md'
 											fontSize='1.1rem'
 											fontWeight='600'
