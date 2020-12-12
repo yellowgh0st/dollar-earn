@@ -56,6 +56,7 @@ export const PoolCards = (props) => {
 									>
 										<Heading textStyle='h2'
 											size='lg'
+											maxWidth='175px'
 											color={color}>
 											{pool.name}
 										</Heading>
@@ -65,8 +66,9 @@ export const PoolCards = (props) => {
 											>Total value locked</StatLabel>
 											<StatNumber textStyle='body'
 												color={color}
-												fontSize={{ base: 'xs', sm: 'lg', lg: 'xl' }}>
-												{prettifyCurrency(pool.totalValueLockedInUSD)}
+												fontWeight='bold'
+												fontSize={{ base: 'xs', sm: '1.3rem', lg: '1.3rem' }}>
+												{prettifyCurrency(pool.totalValueLockedInUSD, 0, 0)}
 											</StatNumber>
 										</Stat>
 										<Tag size='md'
