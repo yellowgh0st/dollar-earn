@@ -47,7 +47,7 @@ const getPercentage = (amount, minFractionDigits = 0, maxFractionDigits = 2, loc
 }
 
 const getPoolLocation = (collateralA = '', collateralB = '') => {
-	return `/${collateralA}${collateralB ? `/${collateralB}` : ''}`
+	return `/${collateralA}${collateralB ? `&${collateralB}` : ''}`
 }
 
 export { prettifyAddress, prettifyCurrency, prettifyNumber, getPercentage, getPoolLocation }

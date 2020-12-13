@@ -8,6 +8,10 @@ export default {
 	},
 	h2: {
 		fontFamily: 'Headline',
+		margin: '0.7rem 0',
+	},
+	h2lg: {
+		fontFamily: 'Headline',
 		margin: '2rem 0',
 	},
 	h3: {

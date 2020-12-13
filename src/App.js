@@ -22,22 +22,21 @@ const App = () => {
 	const { get, response, error, loading } = useFetch(defaults.api.esd)
 
 	useEffect(() => {
+		const getPools = async () => {
+			const data = await get('pools')
+			setLoaded(loading)
+			if (response.ok) {
+				setPools(data)
+				setLoaded(loading)
+			}
+			else {
+				setErr(error)
+				setPools(initPools)
+				setLoaded(loading)
+			}
+		}
 		getPools()
 	}, [])
-
-	const getPools = async () => {
-		const data = await get('pools')
-		setLoaded(loading)
-		if (response.ok) {
-			setPools(data)
-			setLoaded(loading)
-		}
-		else {
-			setErr(error)
-			setPools(initPools)
-			setLoaded(loading)
-		}
-	}
 
 	return (
 		<Router>
@@ -67,7 +66,13 @@ const App = () => {
 											   pool.collateral[1],
 										   )}
 										   exact render={() => (
-										   		<Pool name={pool.name} />
+											<Pool data={pool}
+												  path={getPoolLocation(
+													  pool.collateral[0],
+													  pool.collateral[1],
+												  )}
+												  loading={loaded}
+												  error={err} />
 										   )}/>
 								)
 							})}
