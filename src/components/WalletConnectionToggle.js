@@ -1,34 +1,49 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import defaults from '../common/defaults'
 import { useWallet } from 'use-wallet'
-import { Button } from '@chakra-ui/react'
+import { Button, useToast } from '@chakra-ui/react'
 import { prettifyAddress } from '../common/utils'
 import Jazzicon from '@metamask/jazzicon'
 
 export const WalletConnectionToggle = (props) => {
 
+	const initialText = 'Connect a wallet'
 	const wallet = useWallet()
 	const ref = useRef()
-
-	const text = 'Connect a wallet'
+	const toast = useToast()
+	const [working, setWorking] = useState(false)
+	const [text, setText] = useState(initialText)
 
 	const toggle = () => {
-		if (wallet.status !== 'connected') {
+		if (!wallet.account) {
+			setWorking(true)
 			wallet.connect('injected')
+				.then(() => setWorking(false))
 				.catch(console.log)
 		}
 	}
 
 	useEffect(() => {
 		if (wallet.account !== null) {
-			ref.current.textContent = prettifyAddress(wallet.account)
+			setText(prettifyAddress(wallet.account))
 			ref.current.appendChild(Jazzicon(16, parseInt(
 				wallet.account.slice(2, 10), 16)))
 				.style.marginLeft = '7px'
+			toast({
+				title: 'Wallet connected.',
+				description: 'Your wallet account was successfully connected.',
+				status: 'success',
+				duration: defaults.toast.duration,
+				isClosable: true,
+			})
 		}
 		return () => {
-			ref.current.textContent = text
+			if (wallet.account) {
+				ref.current.getElementsByTagName('div')[0].remove()
+				setText(initialText)
+			}
 		}
-	}, [wallet])
+	}, [wallet.account])
 
 	return (
 		<Button
@@ -38,11 +53,18 @@ export const WalletConnectionToggle = (props) => {
 			variant='solid'
 			aria-label='Wallet Connection Status'
 			color='current'
+			isLoading={working}
 			onClick={toggle}
+			display='block'
 			ref={ref}
 			{...props}
 		>
-			{text}
+			<span style={{
+				float: 'left',
+				lineHeight: '20px',
+			}}>
+				{text}
+			</span>
 		</Button>
 	)
 }

@@ -1,6 +1,7 @@
 import { extendTheme } from '@chakra-ui/react'
-import typography from './typography'
 import { mode } from '@chakra-ui/theme-tools'
+import typography from './typography'
+import colors from './colors'
 
 const overrides = {
 	useSystemColorMode: false,
@@ -14,6 +15,7 @@ const overrides = {
 		}),
 	},
 	textStyles: typography,
+	colors: colors,
 }
 
 export default extendTheme(overrides)
