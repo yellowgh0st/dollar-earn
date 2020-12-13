@@ -55,13 +55,16 @@ export const WalletConnectionToggle = (props) => {
 			color='current'
 			isLoading={working}
 			onClick={toggle}
-			display='block'
+			display='flex'
+			flexDirection='row'
 			ref={ref}
 			{...props}
+			style={{
+				textAlign: 'center',
+			}}
 		>
 			<span style={{
-				float: 'left',
-				lineHeight: '20px',
+				order: '-1',
 			}}>
 				{text}
 			</span>
