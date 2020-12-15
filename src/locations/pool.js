@@ -14,8 +14,6 @@ const Pool = (props) => {
 
 	const Dialog = React.lazy(() => import('../dialogs' + props.path))
 
-	console.log(props.path)
-
 	return (
 		<Box maxW={defaults.layout.width} m='0 auto'>
 			<Fade in={true}>
