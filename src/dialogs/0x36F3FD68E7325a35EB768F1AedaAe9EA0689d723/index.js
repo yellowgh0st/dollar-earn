@@ -1,20 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Heading } from '@chakra-ui/react'
+import { Heading, Spinner } from '@chakra-ui/react'
 import { ContentBox } from '../../components/ContentBox'
+import { Steps } from '../../components/Steps'
 
 const Index = (props) => {
 
 	Index.propTypes = {
-		data: PropTypes.array.isRequired,
+		data: PropTypes.object.isRequired,
 		loading: PropTypes.bool,
 		error: PropTypes.object,
 	}
+
+	const { Step } = Steps
 
 	return (
 		<>
 			<Heading textStyle='h2' size='lg' marginBottom='0.7rem'>{props.data.name}</Heading>
 			<p style={{ marginBottom: '2rem' }}>Bond your tokens in the Empty Set Dollar DAO to gain rewards.</p>
+
+			<Steps current={1} className={'test'}>
+				<Step title='Bond' description={'This is description.'} />
+				<Step title='Wait' icon={<Spinner />} description={'This is description.'} />
+				<Step title='Withdraw' description={'This is description.'} />
+			</Steps>
+
 			<ContentBox>
 				It thought few instant Lambo of some vanity address because Dogecoin stuck few safe ICO of some ERC721
 				token standard, and Bitcoin Cash limited lots of fork since Bitcoin sharded few bag. Mt. Gox based on a

@@ -11,10 +11,12 @@ const Index = (props) => {
 	}
 
 	return (
-		<Box>
-			<Heading textStyle='h2' marginBottom='0.7rem'>{props.data.name}</Heading>
-			<p>Acrue rewards by bonding Uniswap LP tokens in dedicated pool.</p>
-		</Box>
+		<>
+			<Box>
+				<Heading textStyle='h2' marginBottom='0.7rem'>{props.data.name}</Heading>
+				<p>Acrue rewards by bonding Uniswap LP tokens in dedicated pool.</p>
+			</Box>
+		</>
 	)
 }
 
