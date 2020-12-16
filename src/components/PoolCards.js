@@ -31,7 +31,6 @@ export const PoolCards = (props) => {
 		xs: '0',
 		md: '435px',
 	})
-	// eslint-disable-next-line no-unused-vars
 	const iconMarginTop = useBreakpointValue({
 		base: '1.6rem',
 		xs: '1.6rem',

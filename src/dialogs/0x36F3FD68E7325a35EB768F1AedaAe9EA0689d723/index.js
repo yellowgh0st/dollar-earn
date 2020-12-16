@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Heading, Spinner } from '@chakra-ui/react'
 import { ContentBox } from '../../components/ContentBox'
@@ -13,16 +13,18 @@ const Index = (props) => {
 	}
 
 	const { Step } = Steps
+	const [current] = useState(0)
+	const iconHold = current === 1 ? <Spinner size='md' /> : null
 
 	return (
 		<>
 			<Heading textStyle='h2' size='lg' marginBottom='0.7rem'>{props.data.name}</Heading>
 			<p style={{ marginBottom: '2rem' }}>Bond your tokens in the Empty Set Dollar DAO to gain rewards.</p>
 
-			<Steps current={1} className={'test'}>
-				<Step title='Bond' description={'This is description.'} />
-				<Step title='Wait' icon={<Spinner />} description={'This is description.'} />
-				<Step title='Withdraw' description={'This is description.'} />
+			<Steps current={current} className={'test'}>
+				<Step title='Bond' description={'Bonding is the act of locking your token in order to gain rewards.'} />
+				<Step title='Hold' icon={iconHold} description={'You will be able to withdraw upon next epoch.'} />
+				<Step title='Collect' description={'Get your token back along with the accrued reward.'} style={{ maxWidth: '195px' }}/>
 			</Steps>
 
 			<ContentBox>

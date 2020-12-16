@@ -14,19 +14,34 @@ export const Steps = (props) => {
 	}
 
 	const accent = useColorModeValue('black', 'white')
-	console.log(accent)
-
-	const direction = () => {
-		let flexDirection = 'row'
-		if (props.direction === 'vertical') flexDirection = 'column'
-		return flexDirection
-	}
+	const icon = useColorModeValue('white', 'black')
+	const iconBackground = useColorModeValue('#dedede', '#7d7d7d40')
+	const iconBorder = useColorModeValue('rgba(0,0,0,.25)', 'rgba(255,255,255,.25)')
+	const descriptionOpacity = useColorModeValue('0.8', '0.6')
+	const tail = useColorModeValue('#f0f0f0', '#353132')
+	const direction = props.direction === 'vertical' ? 'column' : 'row'
 
 	const StepsComponent = styled(RcSteps)`
 		width: 100%;
 		display: flex;
 		margin-bottom: 2rem;
 		flex-direction: ${direction};
+		& .rc-steps-item .rc-steps-item-icon {
+			margin-right: 6px;
+			width: 32px;
+			height: 32px;
+			min-width: 32px;
+    		min-height: 32px;
+			margin: 0 8px 0 0;
+			font-size: 13px;
+			line-height: 29px;
+			text-align: center;
+			border: 1px solid ${iconBorder};
+			border-radius: 32px;
+    	}
+    	& .rc-steps-item .rc-steps-item-description {
+    		opacity: ${descriptionOpacity};
+    	}
 		& .rc-steps-item:nth-child(n+2) {
 			margin-left: 16px;
 		}
@@ -43,7 +58,7 @@ export const Steps = (props) => {
 		}	
 		& .rc-steps-item:nth-last-child(n+2) .rc-steps-item-content {
 			& .rc-steps-item-title::after {
-				background: #f0f0f0;
+				background: ${tail};
 				position: absolute;
 				top: 11px;
 				left: 93px;
@@ -55,14 +70,14 @@ export const Steps = (props) => {
 		}
 		& .rc-steps-item.rc-steps-item-finish:nth-last-child(n+2) {
 			.rc-steps-item-icon {
-    			border-color: black;
-    			color: white;
-    			background: black;
+    			border-color: ${accent};
+    			color: ${icon};
+    			background: ${accent};
     			font-size: 16px;
     		}
 			.rc-steps-item-content {
 				.rc-steps-item-title::after {
-					background: black;
+					background: ${accent};
 				}
 			}
 		}	
@@ -71,7 +86,7 @@ export const Steps = (props) => {
   				font-weight: bold;
   			}	
   			.rc-steps-item-icon {
-  				background: #dedede;
+  				background: ${iconBackground};
   			}
   		}
   		.rc-steps-item-custom .rc-steps-item-icon {
@@ -100,16 +115,4 @@ Steps.Step = styled(Step)`
     flex: 1;
     overflow: hidden;
     vertical-align: top;
-
-    .rc-steps-item-icon {
-    	margin-right: 6px;
-    	width: 32px;
-    	height: 32px;
-    	margin: 0 8px 0 0;
-    	font-size: 13px;
-	    line-height: 29px;
-   		text-align: center;
-    	border: 1px solid rgba(0,0,0,.25);
-    	border-radius: 32px;
-    }    
 `
