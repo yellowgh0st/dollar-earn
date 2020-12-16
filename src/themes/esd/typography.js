@@ -20,6 +20,7 @@ export default {
 	},
 	h4: {
 		fontFamily: 'Headline',
+		margin: '0.5rem 0',
 	},
 	h5: {
 		fontFamily: 'Headline',

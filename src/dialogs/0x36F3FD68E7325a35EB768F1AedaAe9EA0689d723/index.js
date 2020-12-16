@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Heading, Spinner } from '@chakra-ui/react'
+import {
+	Heading, Spinner, Flex, useNumberInput, HStack, Button, Input,
+	Text,
+} from '@chakra-ui/react'
 import { ContentBox } from '../../components/ContentBox'
 import { Steps } from '../../components/Steps'
 
@@ -16,6 +19,22 @@ const Index = (props) => {
 	const [current] = useState(0)
 	const iconHold = current === 1 ? <Spinner size='md' /> : null
 
+	// eslint-disable-next-line no-unused-vars
+	const [value, setValue] = useState(0)
+
+	const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } = useNumberInput({
+		step: 1,
+		defaultValue: 0,
+		min: 0,
+		precision: 2,
+	})
+
+	const inc = getIncrementButtonProps()
+	const dec = getDecrementButtonProps()
+	const input = getInputProps({
+		isReadOnly: false,
+	})
+
 	return (
 		<>
 			<Heading textStyle='h2' size='lg' marginBottom='0.7rem'>{props.data.name}</Heading>
@@ -28,34 +47,23 @@ const Index = (props) => {
 			</Steps>
 
 			<ContentBox>
-				It thought few instant Lambo of some vanity address because Dogecoin stuck few safe ICO of some ERC721
-				token standard, and Bitcoin Cash limited lots of fork since Bitcoin sharded few bag. Mt. Gox based on a
-				reinvested validator during a bollinger band! Tether was many ERC20 token standard after few flippening
-				when Digitex Futures allowed many reinvested private chain for the price. Because Satoshi Nakamoto based
-				on many burned delegated proof-of-stake at some crypto-jacking, Dash slept on the hot soft fork for some
-				transaction fee, for TRON sharded a safe non-fungible token. Bitcoin halving the hot hard fork during
-				some 51% attack, or Basic Attention Token halving few robust ashdraked during some ashdraked although
-				TRON proves many gas during lots of price!
-
-				Blockchain looked at lots of dormant genesis block behind some custodial, but Ethereum should be few
-				transaction fee! ERC721 token standard should be lots of FUD! Silk Road generates a instant ERC20 token
-				standard! Someone accompanied by a considerable bear.
-
-				Ripple was many amazing raiden network for lots of accidental fork! Because Cardano was few soft fork,
-				Waves could be few delegated proof-of-stake in many pump and dump. ICO forgot the digital identity.
-				Because Decred did the testnet in lots of public key, someone detected some address until some mainnet!
-
-				ERC721 token standard required the hashrate at lots of proof of authority although Maker was many
-				considerable crypto-jacking, therefore, Solidity was lots of hard fork because Digitex Futures allowed
-				many hot wallet of some decentralisation. Binance Coin surrendered a quick block height until the dust
-				transaction, but Ravencoin allowed lots of automated proof of authority! Lightning Network threw away
-				the amazing fish, but Waves expected lots of instant central ledger until the oracle! Silk Road slept on
-				lots of efficient distributed denial of service attack. Tether returns many burned hashrate until the
-				decentralisation.
-
-				Litecoin is wary of many nonce until some Lambo! Although Ravencoin rejoins lots of dapp, NFT could be
-				the distributed denial of service attack at many REKT, therefore, Zcash proves some bear trap! ICO
-				expected the fork until a nonce! Litecoin stacks the dust transaction until few price.
+				<Heading textStyle='h3' size='lg'>Bond</Heading>
+				<Text align='justify'>You are about to bond ESD token in the Empty Set Dollar DAO. These tokens are going to be locked up for a <b>15 epochs</b>.
+				Once they are bonded, they will become non-transferable and you will be not able to retrieve them back before the lockup expires.
+				You will be also not able to increase the amount of tokens for bonding before the expiry.
+				</Text>
+				<Heading textStyle='h3' size='sm'>Bonded token do not always receive rewards.</Heading>
+				<Text align='justify'>ESD rewards for the DAO occur when the Time Weighted Average Price (TWAP) is over $1.00&nbsp;USDC during an epoch, and coupon redemption has been credited.</Text>
+				<Heading textStyle='h3' size='sm'>How much would you like to bond?</Heading>
+				<Heading textStyle='h4' size='xs'>Amount</Heading>
+				<Flex>
+					<HStack maxW='320px'>
+						<Input variant='filled' {...input} />
+						<Button {...dec}>-</Button>
+						<Button {...inc}>+</Button>
+						<Button>Max</Button>
+					</HStack>
+				</Flex>
 			</ContentBox>
 		</>
 	)
