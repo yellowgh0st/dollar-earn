@@ -68,7 +68,7 @@ export const Steps = (props) => {
 				content: "";
 			}
 		}
-		& .rc-steps-item.rc-steps-item-finish:nth-last-child(n+2) {
+		& .rc-steps-item.rc-steps-item-finish {
 			.rc-steps-item-icon {
     			border-color: ${accent};
     			color: ${icon};
