@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
-	Heading, Spinner, Flex, useNumberInput, HStack, Button,
+	Heading, Spinner, Flex, HStack, Button,
 	Input, Text, Img, useBreakpointValue,
 } from '@chakra-ui/react'
 import { ArrowForwardIcon } from '@chakra-ui/icons'
@@ -17,27 +17,8 @@ const Index = (props) => {
 	}
 
 	const { Step } = Steps
-	const [current] = useState(2)
+	const [current] = useState(0)
 	const iconHold = current === 1 ? <Spinner size='md' /> : null
-
-	const [value, setValue] = useState(0)
-
-	const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } = useNumberInput({
-		step: 1,
-		defaultValue: 0,
-		min: 0,
-		precision: 2,
-	})
-
-	const inc = getIncrementButtonProps()
-	const dec = getDecrementButtonProps()
-	const input = getInputProps({
-		isReadOnly: false,
-	})
-
-	const bondIcon = useBreakpointValue({
-		sm: <ArrowForwardIcon />,
-	})
 
 	const Bond = () => (
 		<>
@@ -47,41 +28,11 @@ const Index = (props) => {
 					You will be also not able to increase the amount of tokens for bonding before the expiry.
 			</Text>
 			<Heading textStyle='h3' size='sm'>Bonded token do not always receive rewards.</Heading>
-			<Text align='justify'>ESD rewards for the DAO occur when the Time Weighted Average Price (TWAP) is over $1.00&nbsp;USDC during an epoch, and coupon redemption has been credited.</Text>
+			<Text align='justify'>ESD rewards for the DAO occur when the Time Weighted Average Price (TWAP) is over $1.00 during an epoch, and coupon redemption has been credited.</Text>
 			<Heading textStyle='h3' size='sm'>How much would you like to bond?</Heading>
 			<Heading textStyle='h4' size='xs'>Amount</Heading>
 			<Flex flexWrap='wrap'>
-				<HStack width='100%'
-					maxWidth='313px'
-					marginBottom='1rem'>
-					<Text as='span'>ESD</Text>
-					<Img height='32px'
-							 alt={`${props.data.name} Collateral Icon`}
-							 src={`
-						 svg/tokens/${props.data.collateral[1]
-								 ? props.data.collateral[1]
-								 : props.data.collateral[0]}/index.svg
-								`}
-					/>
-					<Input variant='filled'
-							   marginRight='0.5rem'
-							   value={value}
-							   onChange={(e) => setValue(e.target.value)}
-							   {...input}
-					/>
-				</HStack>
-				<HStack width='100%'
-					maxWidth='313px'
-					paddingRight='0.5rem'
-					marginBottom='1rem'>
-					<Button {...dec}>-</Button>
-					<Button {...inc}>+</Button>
-					<Button>Max</Button>
-					<Button flex='1'
-						rightIcon={bondIcon}>
-							Bond
-					</Button>
-				</HStack>
+				<InputAmount data={props.data} />
 			</Flex>
 		</>
 	)
@@ -101,7 +52,7 @@ const Index = (props) => {
 			</Steps>
 
 			<ContentBox>
-				{current === 1 &&
+				{current === 0 &&
 					<Bond />
 				}
 				{current === 2 &&
@@ -111,6 +62,65 @@ const Index = (props) => {
 					<Bond />
 				}
 			</ContentBox>
+		</>
+	)
+}
+
+const InputAmount = (props) => {
+
+	InputAmount.propTypes = {
+		data: PropTypes.object.isRequired,
+		loading: PropTypes.bool,
+		error: PropTypes.object,
+	}
+
+	const [value, setValue] = React.useState(0)
+	const step = 1
+
+	const bondIcon = useBreakpointValue({
+		sm: <ArrowForwardIcon />,
+	})
+
+	return (
+		<>
+			<HStack width='100%'
+				maxWidth='313px'
+				marginBottom='1rem'>
+				<Text as='span'>ESD</Text>
+				<Img height='32px'
+					 alt={`${props.data.name} Collateral Icon`}
+					 src={`
+						 svg/tokens/${props.data.collateral[1]
+						 ? props.data.collateral[1]
+						 : props.data.collateral[0]}/index.svg
+								`}
+				/>
+				<Input variant='filled'
+					   marginRight='0.5rem'
+					   value={value}
+					   onChange={(event) => setValue(event.target.value)}
+				/>
+			</HStack>
+			<HStack width='100%'
+				maxWidth='313px'
+				paddingRight='0.5rem'
+				marginBottom='1rem'>
+				<Button onClick={() => {
+					if (value <= 1) {
+						setValue(0)
+					}
+					else {
+						setValue(Number(value) - step)
+					}
+				}}>-</Button>
+				<Button onClick={() => setValue(Number(value) + step)}
+				>+</Button>
+				<Button>Max</Button>
+				<Button flex='1'
+					rightIcon={bondIcon}>
+					Bond
+				</Button>
+			</HStack>
 		</>
 	)
 }
