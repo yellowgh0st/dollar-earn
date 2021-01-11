@@ -1,4 +1,7 @@
 export default {
+	baseStyle: {
+		lineHeight: '0px',
+	},
 	variants: {
 		solid: props => ({
 			bg: props.colorMode === 'dark' ? 'accent.light' : 'accent.dark',

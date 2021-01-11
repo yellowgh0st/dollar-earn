@@ -13,7 +13,7 @@ export const ContentBox = (props) => {
 	return (
 		<Box background={background}
 			 borderRadius='21px'
-			 p='2rem 2.6rem 3rem'
+			 p='3rem 3.6rem 4rem'
 			 {...props}
 		>
 			{props.children}

@@ -61,10 +61,10 @@ export const Steps = (props) => {
 				background: ${tail};
 				position: absolute;
 				top: 11px;
-				left: 93px;
-				display: block;
+				display: inline-block;
 				width: 100%;
 				height: 1px;
+				margin-left: 7px;
 				content: "";
 			}
 		}
