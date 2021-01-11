@@ -1,5 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { getERC20Allowance } from '../../common/ethereum'
+import { getDaoImplementation } from '../../common/utils'
+import { useWallet } from 'use-wallet'
+import { ethers } from 'ethers'
+import defaults from '../../common/defaults'
 import {
 	Heading, Spinner, Flex, HStack, Button,
 	Input, Text, Img, useBreakpointValue,
@@ -16,9 +21,25 @@ const Index = (props) => {
 		error: PropTypes.object,
 	}
 
+	const wallet = useWallet()
+
+	useEffect(() => {
+		if (wallet.account !== null) {
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+			console.log(getDaoImplementation(defaults.contracts.esds, provider))
+			getERC20Allowance(defaults.contracts.esd,
+				wallet.account,
+				'0x443D2f2755DB5942601fa062Cc248aAA153313D3',
+				provider,
+			).then(n => {
+				if (BigInt(n) > BigInt(0)) setApproved(true)
+			})
+		}
+	}, [wallet.account])
+
 	const { Step } = Steps
 	const [current] = useState(0)
-	const [approved] = useState(false)
+	const [approved, setApproved] = useState(false)
 	const [approving, setApproving] = useState(false)
 	const [staging, setStaging] = useState(false)
 	const [bonding, setBonding] = useState(false)
