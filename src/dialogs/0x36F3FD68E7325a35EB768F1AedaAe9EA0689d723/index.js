@@ -54,7 +54,27 @@ const Index = (props) => {
 	const Stage = () => {
 
 		const [value, setValue] = useState(0)
-		const step = 1
+		const [onPressTimeout, setOnPressTimeout] = useState(null)
+
+		const inc = () => {
+			setValue(prevState => Number(prevState + 1))
+			setOnPressTimeout(setTimeout(inc, 105))
+		}
+
+		const dec = () => {
+			if (value <= 1) {
+				setValue(0)
+			}
+			else {
+				setValue(prevState => (prevState >= 1 ? prevState - 1 : 0))
+				setOnPressTimeout(setTimeout(dec, 105))
+			}
+		}
+
+		const stop = () => {
+			clearTimeout(onPressTimeout)
+			setOnPressTimeout(null)
+		}
 
 		return (
 			<>
@@ -85,16 +105,8 @@ const Index = (props) => {
 						maxWidth='313px'
 						paddingRight='0.5rem'
 						marginBottom='1rem'>
-						<Button onClick={() => {
-							if (value <= 1) {
-								setValue(0)
-							}
-							else {
-								setValue(Number(value) - step)
-							}
-						}}>-</Button>
-						<Button onClick={() => setValue(Number(value) + step)}
-						>+</Button>
+						<Button onMouseDown={dec} onMouseUp={stop} onMouseLeave={stop}>-</Button>
+						<Button onMouseDown={inc} onMouseUp={stop} onMouseLeave={stop}>+</Button>
 						<Button>Max</Button>
 						{approved &&
 							<Button flex='1'
