@@ -171,7 +171,7 @@ const Index = (props) => {
 	return (
 		<>
 			<Heading textStyle='h2' size='lg' marginBottom='0.7rem'>{props.data.name}</Heading>
-			<p style={{ marginBottom: '2rem' }}>Bond your tokens in the Empty Set Dollar DAO to gain rewards.</p>
+			<p style={{ marginBottom: '3.2rem' }}>Bond your tokens in the Empty Set Dollar DAO to gain rewards.</p>
 
 			<Steps current={current}
 				   className={'test'}

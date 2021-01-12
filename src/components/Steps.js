@@ -24,7 +24,7 @@ export const Steps = (props) => {
 	const StepsComponent = styled(RcSteps)`
 		width: 100%;
 		display: flex;
-		margin-bottom: 2rem;
+		margin-bottom: 3.2rem;
 		flex-direction: ${direction};
 		& .rc-steps-item .rc-steps-item-icon {
 			margin-right: 6px;
