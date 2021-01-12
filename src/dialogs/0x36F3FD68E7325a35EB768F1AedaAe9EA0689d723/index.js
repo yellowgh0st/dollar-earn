@@ -23,21 +23,22 @@ const Index = (props) => {
 	const wallet = useWallet()
 
 	useEffect(() => {
-		if (wallet.account !== null) {
+		if (wallet.account) {
 			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
 			getERC20Allowance(defaults.contracts.esd,
 				wallet.account,
 				defaults.contracts.root,
 				provider,
 			).then(n => {
-				if (BigInt(n) > BigInt(0)) setApproved(true)
+				if (!BigInt(n) > BigInt(0)) setApproved(false)
 			})
 		}
+		return () => setApproved(true)
 	}, [wallet.account])
 
 	const { Step } = Steps
 	const [current] = useState(0)
-	const [approved, setApproved] = useState(false)
+	const [approved, setApproved] = useState(true)
 	const [approving, setApproving] = useState(false)
 	const [staging, setStaging] = useState(false)
 	const [bonding, setBonding] = useState(false)
@@ -94,6 +95,18 @@ const Index = (props) => {
 						<Button onClick={() => setValue(Number(value) + step)}
 						>+</Button>
 						<Button>Max</Button>
+						{approved &&
+							<Button flex='1'
+								rightIcon={arrowIcon}
+								isLoading={staging}
+								loadingText='Depositing'
+								onClick={() => {
+									setStaging(true)
+								}}
+							>
+							Deposit
+							</Button>
+						}
 						{!approved &&
 							<Button flex='1'
 								rightIcon={arrowIcon}
@@ -105,18 +118,6 @@ const Index = (props) => {
 							>
 								Approve
 							</Button>
-						}
-						{approved &&
-								<Button flex='1'
-									rightIcon={arrowIcon}
-									isLoading={staging}
-									loadingText='Depositing'
-									onClick={() => {
-										setStaging(true)
-									}}
-								>
-									Deposit
-								</Button>
 						}
 					</HStack>
 				</Flex>
