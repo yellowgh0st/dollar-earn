@@ -66,7 +66,7 @@ const Index = (props) => {
 						maxWidth='313px'
 						marginBottom='1rem'>
 						<Text as='span'>ESD</Text>
-						<Img height='32px'
+						<Img minWidth='32px' height='32px'
 							 alt={`${props.data.name} Collateral Icon`}
 							 src={`
 							 svg/tokens/${props.data.collateral[1]
@@ -76,6 +76,7 @@ const Index = (props) => {
 						/>
 						<Input variant='filled'
 							   marginRight='0.5rem'
+							   overflow='hidden'
 							   value={value}
 							   onChange={(event) => setValue(event.target.value)}
 						/>
