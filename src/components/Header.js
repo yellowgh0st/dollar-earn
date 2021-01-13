@@ -4,6 +4,7 @@ import { Flex, Spacer } from '@chakra-ui/react'
 import { Logotype } from './Logotype'
 import { WalletConnectionToggle } from './WalletConnectionToggle'
 import { ColorModeSwitcher } from './ColorModeSwitcher'
+import { BalanceIndicator } from './BalanceIndicator'
 
 export const Header = (props) => {
 	return (
@@ -13,7 +14,8 @@ export const Header = (props) => {
 			</Flex>
 			<Spacer />
 			<Flex w="33%" justifyContent='flex-end'>
-				<WalletConnectionToggle />
+				<BalanceIndicator />
+				<WalletConnectionToggle marginLeft='0.6rem' />
 				<ColorModeSwitcher marginLeft='0.6rem' />
 			</Flex>
 		</Flex>

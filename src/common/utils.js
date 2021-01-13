@@ -1,5 +1,3 @@
-import { ethers } from 'ethers'
-
 const prettifyAddress = (address) => {
 	return `${address.substring(0, 7)}...${address.substring(address.length - 4, address.length)}`
 }
@@ -21,6 +19,16 @@ const prettifyCurrency = (amount, minFractionDigits = 0, maxFractionDigits = 2, 
 			maximumFractionDigits: maxFractionDigits,
 		}
 		symbol = 'Ξ'
+		cryptocurrency = true
+	}
+
+	if (currency === 'ESD') {
+		options = {
+			style: 'decimal',
+			minimumFractionDigits: minFractionDigits,
+			maximumFractionDigits: maxFractionDigits,
+		}
+		symbol = 'ø'
 		cryptocurrency = true
 	}
 
@@ -52,13 +60,4 @@ const getPoolLocation = (collateralA = '', collateralB = '') => {
 	return `/${collateralA}${collateralB ? `&${collateralB}` : ''}`
 }
 
-const getDaoImplementation = async (address, provider) => {
-	return ethers.utils.hexStripZeros(
-		await provider.getStorageAt(
-			address,
-			'0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',
-			// bytes32(uint256(keccak256('eip1967.proxy.implementation')) - 1)
-		))
-}
-
-export { prettifyAddress, prettifyCurrency, prettifyNumber, getPercentage, getPoolLocation, getDaoImplementation }
+export { prettifyAddress, prettifyCurrency, prettifyNumber, getPercentage, getPoolLocation }
