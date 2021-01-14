@@ -30,7 +30,7 @@ export const WalletConnectionToggle = (props) => {
 				wallet.account.slice(2, 10), 16)))
 				.style.marginLeft = '7px'
 			toast({
-				title: 'Wallet Connected',
+				title: 'Wallet connected',
 				description: 'Your wallet account has been successfully connected.',
 				status: 'success',
 				duration: defaults.toast.duration,

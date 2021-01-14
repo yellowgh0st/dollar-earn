@@ -3,7 +3,8 @@ const prettifyAddress = (address) => {
 }
 
 const prettifyCurrency = (amount, minFractionDigits = 0, maxFractionDigits = 2, currency = 'USD', locales = 'en-US') => {
-	let symbol
+	let symbol = ''
+	let symbolPrepended = false
 	let cryptocurrency = false
 	let options = {
 		style: 'currency',
@@ -29,12 +30,16 @@ const prettifyCurrency = (amount, minFractionDigits = 0, maxFractionDigits = 2, 
 			maximumFractionDigits: maxFractionDigits,
 		}
 		symbol = 'ø'
+		symbolPrepended = true
 		cryptocurrency = true
 	}
 
 	const currencyValue = new Intl.NumberFormat(locales, options)
 
-	return (cryptocurrency ? `${currencyValue.format(amount)}${String.fromCharCode(160)}${symbol}` : currencyValue.format(amount))
+	return (
+		cryptocurrency ? `${symbolPrepended ? symbol + '\u00A0' : ''}${currencyValue.format(amount)}${String.fromCharCode(160)}${symbolPrepended ? '' : '\u00A0' + symbol}`
+			: currencyValue.format(amount)
+	)
 }
 
 const prettifyNumber = (amount, minFractionDigits = 0, maxFractionDigits = 0, locales = 'en-US') => {

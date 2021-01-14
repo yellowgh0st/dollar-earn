@@ -10,7 +10,7 @@ const getERC20Allowance = async (tokenAddress, walletAddress, spenderAddress, pr
 	return await contract.allowance(walletAddress, spenderAddress)
 }
 
-const getDaoImplementation = async (address, provider) => {
+const getDAOImplementation = async (address, provider) => {
 	return ethers.utils.hexStripZeros(
 		await provider.getStorageAt(
 			address,
@@ -19,4 +19,13 @@ const getDaoImplementation = async (address, provider) => {
 		))
 }
 
-export { getERC20Allowance, getDaoImplementation }
+const getERC20BalanceOf = async (tokenAddress, address, provider) => {
+	const contract = new ethers.Contract(
+		tokenAddress,
+		humanStandardTokenAbi,
+		provider,
+	)
+	return await contract.balanceOf(address)
+}
+
+export { getERC20Allowance, getDAOImplementation, getERC20BalanceOf }
