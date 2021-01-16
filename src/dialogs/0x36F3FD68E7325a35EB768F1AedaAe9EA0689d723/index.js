@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { getERC20Allowance, getERC20BalanceOf } from '../../common/ethereum'
+import { getERC20Allowance, getERC20BalanceOf, approveERC20 } from '../../common/ethereum'
 import { useWallet } from 'use-wallet'
 import { ethers } from 'ethers'
 import defaults from '../../common/defaults'
@@ -209,6 +209,7 @@ const Stage = (props) => {
 					<Input variant='filled'
 						   marginRight='0.5rem'
 						   overflow='hidden'
+						   fontWeight='bold'
 						   value={value}
 						   onChange={(event) => setValue(event.target.value)}
 					/>
@@ -238,34 +239,57 @@ const Stage = (props) => {
 						}
 					}}>Max</Button>
 					{approved &&
-					<Button flex='1'
-						rightIcon={arrowIcon}
-						isLoading={staging}
-						loadingText='Depositing'
-						onClick={() => {
-							if (wallet.account) {
-								setStaging(true)
-								setValue(prevState => prevState)
-							}
-							else {
-								toast(warning)
-							}
-						}}
-					>
-						Deposit
-					</Button>
+						<Button flex='1'
+							rightIcon={arrowIcon}
+							isLoading={staging}
+							loadingText='Depositing'
+							onClick={() => {
+								if (wallet.account) {
+									setStaging(true)
+									setValue(prevState => prevState)
+								}
+								else {
+									toast(warning)
+								}
+							}}
+						>
+							Deposit
+						</Button>
 					}
 					{!approved &&
-					<Button flex='1'
-						rightIcon={arrowIcon}
-						isLoading={approving}
-						loadingText='Approving'
-						onClick={() => {
-							setApproving(true)
-						}}
-					>
-						Approve
-					</Button>
+						<Button flex='1'
+							rightIcon={arrowIcon}
+							isLoading={approving}
+							loadingText='Approving'
+							onClick={() => {
+								setApproving(true)
+								const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+								approveERC20(
+									defaults.contracts.esd,
+									defaults.contracts.root,
+									undefined,
+									provider,
+								).then((tx) => {
+									tx.wait().then(() => {
+										setApproved(true)
+										setApproving(false)
+										toast(approvalSuccess)
+									}).catch(() => {
+										toast(approvalFailed)
+									})
+								}).catch((err) => {
+									if (err.code === 4001) {
+										toast(denied)
+									}
+									else {
+										toast(approvalFailed)
+									}
+									setApproving(false)
+								})
+							}}
+						>
+							Approve
+						</Button>
 					}
 				</HStack>
 			</Flex>
@@ -277,6 +301,30 @@ const warning = {
 	title: 'Wallet not connected',
 	description: 'You have to connect your Ethereum wallet first.',
 	status: 'warning',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const denied = {
+	title: 'Transaction denied',
+	description: 'You have denied submitting the transaction.',
+	status: 'warning',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const approvalSuccess = {
+	title: 'Successfull approval',
+	description: 'You have enabled ESD for spending.',
+	status: 'success',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const approvalFailed = {
+	title: 'Approval failed',
+	description: 'ESD was not approved for spending.',
+	status: 'error',
 	duration: defaults.toast.duration,
 	isClosable: true,
 }

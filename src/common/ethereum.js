@@ -1,13 +1,13 @@
 import { ethers } from 'ethers'
 import humanStandardTokenAbi from '../abi/humanStandardTokenAbi'
 
-const getERC20Allowance = async (tokenAddress, walletAddress, spenderAddress, provider) => {
+const getERC20Allowance = async (tokenAddress, accountAddress, spenderAddress, provider) => {
 	const contract = new ethers.Contract(
 		tokenAddress,
 		humanStandardTokenAbi,
 		provider,
 	)
-	return await contract.allowance(walletAddress, spenderAddress)
+	return await contract.allowance(accountAddress, spenderAddress)
 }
 
 const getDAOImplementation = async (address, provider) => {
@@ -28,4 +28,16 @@ const getERC20BalanceOf = async (tokenAddress, address, provider) => {
 	return await contract.balanceOf(address)
 }
 
-export { getERC20Allowance, getDAOImplementation, getERC20BalanceOf }
+const approveERC20 = async (tokenAddress, spenderAddress,
+	amount = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+	provider,
+) => {
+	const contract = new ethers.Contract(
+		tokenAddress,
+		humanStandardTokenAbi,
+		provider.getSigner(0),
+	)
+	return await contract.approve(spenderAddress, amount)
+}
+
+export { getERC20Allowance, getDAOImplementation, getERC20BalanceOf, approveERC20 }
