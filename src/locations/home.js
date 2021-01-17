@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import defaults from '../common/defaults'
 import { Box, Heading, Text } from '@chakra-ui/react'
 import { PoolCards } from '../components/PoolCards'
+import { BalanceContext } from '../components/BalanceIndicator'
 
 const Home = (props) => {
 
@@ -11,6 +12,10 @@ const Home = (props) => {
 		loading: PropTypes.bool,
 		error: PropTypes.object,
 	}
+
+	const { setStagedBalance } = useContext(BalanceContext)
+
+	useEffect(() => setStagedBalance({}), [])
 
 	return (
 		<Box maxW={defaults.layout.width} m='0 auto'>

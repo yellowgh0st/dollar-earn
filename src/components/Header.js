@@ -7,6 +7,7 @@ import { ColorModeSwitcher } from './ColorModeSwitcher'
 import { BalanceIndicator } from './BalanceIndicator'
 
 export const Header = (props) => {
+
 	return (
 		<Flex {...props}>
 			<Flex w="33%">

@@ -1,6 +1,7 @@
 import { ethers } from 'ethers'
 import humanStandardTokenAbi from '../abi/humanStandardTokenAbi'
 import Implementation from '../abi/Implementation'
+import Pool from '../abi/Pool'
 import defaults from './defaults'
 
 const getERC20Allowance = async (tokenAddress, accountAddress, spenderAddress, provider) => {
@@ -42,6 +43,15 @@ const approveERC20 = async (tokenAddress, spenderAddress,
 	return await contract.approve(spenderAddress, amount)
 }
 
+const getBalanceOfStaged = async (poolAddress, address, provider) => {
+	const contract = new ethers.Contract(
+		poolAddress,
+		Pool,
+		provider,
+	)
+	return await contract.balanceOfStaged(address)
+}
+
 const depositDAO = async (amount, provider) => {
 	const contract = new ethers.Contract(
 		defaults.contracts.root,
@@ -61,6 +71,6 @@ const bondDAO = async (amount, provider) => {
 }
 
 export {
-	getERC20Allowance, getDAOImplementation, getERC20BalanceOf, approveERC20, depositDAO,
-	bondDAO,
+	getERC20Allowance, getDAOImplementation, getERC20BalanceOf, approveERC20, getBalanceOfStaged,
+	depositDAO, bondDAO,
 }

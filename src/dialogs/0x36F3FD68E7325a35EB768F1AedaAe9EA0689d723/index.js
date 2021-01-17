@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
-	getERC20Allowance, getERC20BalanceOf, approveERC20, depositDAO, bondDAO,
+	getERC20Allowance, getERC20BalanceOf, approveERC20, depositDAO, bondDAO, getBalanceOfStaged,
 } from '../../common/ethereum'
 import { useWallet } from 'use-wallet'
 import { ethers } from 'ethers'
@@ -13,6 +13,7 @@ import {
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 import { ContentBox } from '../../components/ContentBox'
 import { Steps } from '../../components/Steps'
+import { BalanceContext } from '../../components/BalanceIndicator'
 
 const Index = (props) => {
 
@@ -71,6 +72,7 @@ const Bond = (props) => {
 
 	const wallet = useWallet()
 	const toast = useToast()
+	const { stagedBalance } = useContext(BalanceContext)
 
 	const [bonding, setBonding] = useState(false)
 
@@ -105,31 +107,39 @@ const Bond = (props) => {
 					rightIcon={arrowIcon}
 					onClick={() => {
 						if (wallet.account) {
-							setBonding(true)
-							const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-							bondDAO(
-								ethers.utils.parseEther(String(0)),
-								provider,
-							).then((tx) => {
-								tx.wait().then(() => {
-									setBonding(false)
-									toast(bondingSuccess)
-								}).catch(() => {
-									toast(bondingFailed)
+							if (stagedBalance > 0) {
+								setBonding(true)
+								const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+								bondDAO(
+									stagedBalance,
+									provider,
+								).then((tx) => {
+									tx.wait().then(() => {
+										setBonding(false)
+										toast(bondingSuccess)
+									}).catch(() => {
+										toast(bondingFailed)
+										setBonding(false)
+									})
+								}).catch((err) => {
+									if (err.code === 4001) {
+										toast(denied)
+									}
+									else if (err.error.code === -32603) {
+										toast(stagedBalanceLow)
+									}
+									else {
+										toast(bondingFailed)
+									}
 									setBonding(false)
 								})
-							}).catch((err) => {
-								if (err.code === 4001) {
-									toast(denied)
-								}
-								else {
-									toast(bondingFailed)
-								}
-								setBonding(false)
-							})
+							}
+							else {
+								toast(stagedBalanceLow)
+							}
 						}
 						else {
-							toast(warning)
+							toast(walletNotConnected)
 						}
 					}}
 				>
@@ -151,6 +161,7 @@ const Stage = (props) => {
 	const wallet = useWallet()
 	const toast = useToast()
 	const [esdBalance, setEsdBalance] = useState(0)
+	const { setStagedBalance } = useContext(BalanceContext)
 	const [value, setValue] = useState(0)
 	const [approved, setApproved] = useState(true)
 	const [approving, setApproving] = useState(false)
@@ -191,9 +202,21 @@ const Stage = (props) => {
 		return () => setEsdBalance(0)
 	}, [wallet.account])
 
+	useEffect(() => {
+		if (wallet.account) {
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+			getBalanceOfStaged(
+				defaults.contracts.root,
+				wallet.account,
+				provider,
+			).then(n => setStagedBalance(n))
+		}
+		return () => setStagedBalance({})
+	}, [wallet.account])
+
 	const inc = () => {
 		setValue(prevState => Number(prevState + 1))
-		setOnPressTimeout(setTimeout(inc, 115))
+		setOnPressTimeout(setTimeout(inc, 200))
 	}
 
 	const dec = () => {
@@ -202,7 +225,7 @@ const Stage = (props) => {
 		}
 		else {
 			setValue(prevState => (prevState >= 1 ? prevState - 1 : 0))
-			setOnPressTimeout(setTimeout(dec, 115))
+			setOnPressTimeout(setTimeout(dec, 200))
 		}
 	}
 
@@ -258,7 +281,7 @@ const Stage = (props) => {
 							setValue(ethers.utils.formatEther(esdBalance))
 						}
 						else {
-							toast(warning)
+							toast(walletNotConnected)
 						}
 					}}>Max</Button>
 					{approved &&
@@ -268,39 +291,47 @@ const Stage = (props) => {
 							loadingText='Depositing'
 							onClick={() => {
 								if (wallet.account) {
-									setStaging(true)
-									const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-									depositDAO(
-										ethers.utils.parseEther(String(value)),
-										provider,
-									).then((tx) => {
-										tx.wait().then(() => {
-											setStaging(false)
-											setValue(0)
-											toast(stagingSuccess)
-											getERC20BalanceOf(
-												defaults.contracts.esd,
-												wallet.account,
-												provider,
-											).then(
-												n => setEsdBalance(n),
-											)
-										}).catch(() => {
-											toast(stagingFailed)
+									if (value > 0) {
+										setStaging(true)
+										const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+										depositDAO(
+											ethers.utils.parseEther(String(value)),
+											provider,
+										).then((tx) => {
+											tx.wait().then(() => {
+												setStaging(false)
+												setValue(0)
+												toast(stagingSuccess)
+												getERC20BalanceOf(
+													defaults.contracts.esd,
+													wallet.account,
+													provider,
+												).then(
+													n => setEsdBalance(n),
+												)
+											}).catch(() => {
+												toast(stagingFailed)
+												setStaging(false)
+											})
+										}).catch((err) => {
+											if (err.code === 4001) {
+												toast(denied)
+											}
+											else if (err.error.code === -32603) {
+												toast(balanceLow)
+											}
+											else {
+												toast(stagingFailed)
+											}
 											setStaging(false)
 										})
-									}).catch((err) => {
-										if (err.code === 4001) {
-											toast(denied)
-										}
-										else {
-											toast(stagingFailed)
-										}
-										setStaging(false)
-									})
+									}
+									else {
+										toast(noDepositValue)
+									}
 								}
 								else {
-									toast(warning)
+									toast(walletNotConnected)
 								}
 							}}
 						>
@@ -349,7 +380,7 @@ const Stage = (props) => {
 	)
 }
 
-const warning = {
+const walletNotConnected = {
 	title: 'Wallet not connected',
 	description: 'You have to connect your Ethereum wallet first.',
 	status: 'warning',
@@ -376,6 +407,30 @@ const approvalSuccess = {
 const approvalFailed = {
 	title: 'Approval failed',
 	description: 'ESD was not approved for spending.',
+	status: 'error',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const noDepositValue = {
+	title: 'No amount specified',
+	description: 'You have not specified amount to deposit.',
+	status: 'warning',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const balanceLow = {
+	title: 'Not enough balance',
+	description: 'ESD balance on your wallet is not enough.',
+	status: 'error',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const stagedBalanceLow = {
+	title: 'No ESD deposited',
+	description: 'There is nothing to bond in the DAO pool.',
 	status: 'error',
 	duration: defaults.toast.duration,
 	isClosable: true,

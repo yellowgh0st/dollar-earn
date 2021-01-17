@@ -6,6 +6,7 @@ import useFetch from 'use-http'
 import { getPoolLocation } from './common/utils'
 import esd from './themes/esd'
 import { UseWalletProvider } from 'use-wallet'
+import { BalanceProvider } from './components/BalanceIndicator'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 
@@ -44,45 +45,47 @@ const App = () => {
 				<UseWalletProvider
 					chainId={defaults.network.chainId}
 					connectors={defaults.network.connectors}>
-					<Box h='100vh'
-						 justifyContent='center'
-						 mx={{ base: '0.5rem', sm: '1rem', md: '2.5rem', lg: '13rem' }}
-						 p={3}>
-						<Header width='100%'
-							marginTop='1.2rem'
-							marginBottom='3.2rem'
-							justifyContent='center' />
+					<BalanceProvider>
+						<Box h='100vh'
+							 justifyContent='center'
+							 mx={{ base: '0.5rem', sm: '1rem', md: '2.5rem', lg: '13rem' }}
+							 p={3}>
+							<Header width='100%'
+								marginTop='1.2rem'
+								marginBottom='3.2rem'
+								justifyContent='center' />
 
-						<Switch>
-							<Route path='/' exact render={() =>
-								<Home data={pools} loading={loaded} error={err} />}
-							/>
+							<Switch>
+								<Route path='/' exact render={() =>
+									<Home data={pools} loading={loaded} error={err} />}
+								/>
 
-							{pools.map((pool, index) => {
-								return (
-									<Route key={index}
-										   path={getPoolLocation(
-										   	   pool.collateral[0],
-											   pool.collateral[1],
-										   )}
-										   exact render={() => (
-											<Pool data={pool}
-												  path={getPoolLocation(
-													  pool.collateral[0],
-													  pool.collateral[1],
-												  )}
-												  loading={loaded}
-												  error={err} />
-										   )}/>
-								)
-							})}
+								{pools.map((pool, index) => {
+									return (
+										<Route key={index}
+											   path={getPoolLocation(
+												   pool.collateral[0],
+												   pool.collateral[1],
+											   )}
+											   exact render={() => (
+												<Pool data={pool}
+													  path={getPoolLocation(
+														  pool.collateral[0],
+														  pool.collateral[1],
+													  )}
+													  loading={loaded}
+													  error={err} />
+											   )}/>
+									)
+								})}
 
-							<Route path='*' render={() => (
-								<Redirect to={'/'} />
-							)} />
-						</Switch>
-						<Footer h='7vh' justifyContent='center' />
-					</Box>
+								<Route path='*' render={() => (
+									<Redirect to={'/'} />
+								)} />
+							</Switch>
+							<Footer h='7vh' justifyContent='center' />
+						</Box>
+					</BalanceProvider>
 				</UseWalletProvider>
 			</ChakraProvider>
 		</Router>
