@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { getERC20Allowance, getERC20BalanceOf, approveERC20 } from '../../common/ethereum'
+import {
+	getERC20Allowance, getERC20BalanceOf, approveERC20, depositDAO, bondDAO,
+} from '../../common/ethereum'
 import { useWallet } from 'use-wallet'
 import { ethers } from 'ethers'
 import defaults from '../../common/defaults'
@@ -38,7 +40,7 @@ const Index = (props) => {
 					  description={'Bonding is the act of locking your token in order to gain rewards.'} />
 				<Step title='Hold'
 					  icon={iconHold}
-					  description={'You will be able to withdraw once lockup expires.'} />
+					  description={'You have to wait for lockup expiry.'} />
 				<Step title='Collect'
 					  description={'Get your token back along with the accrued reward.'}
 					  style={{ maxWidth: '227px' }}/>
@@ -93,7 +95,7 @@ const Bond = (props) => {
 				is over $1.00 during an epoch, and coupon redemption has been credited.</Text>
 			<Stage data={props.data}/>
 			<Heading textStyle='h2' size='sm'>Would you like to bond your tokens now?</Heading>
-			<Text as='i'>Bond locks token for 15 epochs.</Text>
+			<Text as='i'>Bond locks all tokens for 15 epochs.</Text>
 			<Flex maxWidth={bondButtonWidth}
 				  margin='0.7rem 0'
 			>
@@ -104,6 +106,27 @@ const Bond = (props) => {
 					onClick={() => {
 						if (wallet.account) {
 							setBonding(true)
+							const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+							bondDAO(
+								ethers.utils.parseEther(String(0)),
+								provider,
+							).then((tx) => {
+								tx.wait().then(() => {
+									setBonding(false)
+									toast(bondingSuccess)
+								}).catch(() => {
+									toast(bondingFailed)
+									setBonding(false)
+								})
+							}).catch((err) => {
+								if (err.code === 4001) {
+									toast(denied)
+								}
+								else {
+									toast(bondingFailed)
+								}
+								setBonding(false)
+							})
 						}
 						else {
 							toast(warning)
@@ -232,7 +255,7 @@ const Stage = (props) => {
 					>+</Button>
 					<Button onClick={() => {
 						if (wallet.account) {
-							setValue(Number(ethers.utils.formatEther(esdBalance)))
+							setValue(ethers.utils.formatEther(esdBalance))
 						}
 						else {
 							toast(warning)
@@ -246,7 +269,35 @@ const Stage = (props) => {
 							onClick={() => {
 								if (wallet.account) {
 									setStaging(true)
-									setValue(prevState => prevState)
+									const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+									depositDAO(
+										ethers.utils.parseEther(String(value)),
+										provider,
+									).then((tx) => {
+										tx.wait().then(() => {
+											setStaging(false)
+											setValue(0)
+											toast(stagingSuccess)
+											getERC20BalanceOf(
+												defaults.contracts.esd,
+												wallet.account,
+												provider,
+											).then(
+												n => setEsdBalance(n),
+											)
+										}).catch(() => {
+											toast(stagingFailed)
+											setStaging(false)
+										})
+									}).catch((err) => {
+										if (err.code === 4001) {
+											toast(denied)
+										}
+										else {
+											toast(stagingFailed)
+										}
+										setStaging(false)
+									})
 								}
 								else {
 									toast(warning)
@@ -275,6 +326,7 @@ const Stage = (props) => {
 										setApproving(false)
 										toast(approvalSuccess)
 									}).catch(() => {
+										setApproving(false)
 										toast(approvalFailed)
 									})
 								}).catch((err) => {
@@ -325,6 +377,38 @@ const approvalFailed = {
 	title: 'Approval failed',
 	description: 'ESD was not approved for spending.',
 	status: 'error',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const stagingFailed = {
+	title: 'Deposit failed',
+	description: 'ESD was not deposited in to the DAO.',
+	status: 'error',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const stagingSuccess = {
+	title: 'Successfull deposit',
+	description: 'You have deposited ESD in to the DAO.',
+	status: 'success',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const bondingFailed = {
+	title: 'Bond failed',
+	description: 'ESD was not bonded. Lockup remains unaffected.',
+	status: 'error',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+const bondingSuccess = {
+	title: 'Successfull bond',
+	description: 'You have bonded ESD. Lockup increased by 15 epochs.',
+	status: 'success',
 	duration: defaults.toast.duration,
 	isClosable: true,
 }
