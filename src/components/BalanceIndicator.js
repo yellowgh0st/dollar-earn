@@ -12,10 +12,11 @@ export const BalanceProvider = (props) => {
 		children: PropTypes.any,
 	}
 
-	const [stagedBalance, setStagedBalance] = useState({})
+	const [stagedBalance, setStagedBalance] = useState(ethers.BigNumber.from('0'))
+	const [bondedBalance, setBondedBalance] = useState(ethers.BigNumber.from('0'))
 
 	return (
-		<BalanceContext.Provider value={{ stagedBalance, setStagedBalance }}>
+		<BalanceContext.Provider value={{ stagedBalance, setStagedBalance, bondedBalance, setBondedBalance }}>
 			{props.children}
 		</BalanceContext.Provider>
 	)
@@ -23,11 +24,11 @@ export const BalanceProvider = (props) => {
 
 export const BalanceIndicator = (props) => {
 
-	const { stagedBalance } = useContext(BalanceContext)
+	const { stagedBalance, bondedBalance } = useContext(BalanceContext)
 
 	return (
 		<>
-			{!isNaN(stagedBalance) && stagedBalance > 0 &&
+			{!isNaN(stagedBalance) && stagedBalance > 0 || !isNaN(bondedBalance) && bondedBalance > 0 &&
 				<Button
 					size='md'
 					minWidth='initial'
@@ -45,7 +46,14 @@ export const BalanceIndicator = (props) => {
 						order: '-1',
 						marginRight: '3px',
 					}}>
-						{prettifyCurrency(ethers.utils.formatEther(stagedBalance), 0, 2, 'ESD')}
+						{prettifyCurrency(
+							(ethers.utils.formatEther(
+								stagedBalance.add(bondedBalance),
+							)),
+							0,
+							2,
+							'ESD',
+						)}
 					</span>
 				</Button>
 			}

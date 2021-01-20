@@ -43,6 +43,15 @@ const approveERC20 = async (tokenAddress, spenderAddress,
 	return await contract.approve(spenderAddress, amount)
 }
 
+const getDaoStatusOf = async (account, provider) => {
+	const contract = new ethers.Contract(
+		defaults.contracts.root,
+		Implementation,
+		provider,
+	)
+	return await contract.statusOf(account)
+}
+
 const getBalanceOfStaged = async (poolAddress, address, provider) => {
 	const contract = new ethers.Contract(
 		poolAddress,
@@ -50,6 +59,15 @@ const getBalanceOfStaged = async (poolAddress, address, provider) => {
 		provider,
 	)
 	return await contract.balanceOfStaged(address)
+}
+
+const getBalanceOfBonded = async (poolAddress, address, provider) => {
+	const contract = new ethers.Contract(
+		poolAddress,
+		Pool,
+		provider,
+	)
+	return await contract.balanceOfBonded(address)
 }
 
 const depositDAO = async (amount, provider) => {
@@ -71,6 +89,6 @@ const bondDAO = async (amount, provider) => {
 }
 
 export {
-	getERC20Allowance, getDAOImplementation, getERC20BalanceOf, approveERC20, getBalanceOfStaged,
-	depositDAO, bondDAO,
+	getERC20Allowance, getDAOImplementation, getERC20BalanceOf, approveERC20, getDaoStatusOf,
+	getBalanceOfStaged, getBalanceOfBonded, depositDAO, bondDAO,
 }

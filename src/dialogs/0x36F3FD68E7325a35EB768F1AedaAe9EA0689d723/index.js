@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
 	getERC20Allowance, getERC20BalanceOf, approveERC20, depositDAO, bondDAO, getBalanceOfStaged,
+	getBalanceOfBonded,
 } from '../../common/ethereum'
 import { useWallet } from 'use-wallet'
 import { ethers } from 'ethers'
@@ -161,7 +162,7 @@ const Stage = (props) => {
 	const wallet = useWallet()
 	const toast = useToast()
 	const [esdBalance, setEsdBalance] = useState(0)
-	const { setStagedBalance } = useContext(BalanceContext)
+	const { setStagedBalance, setBondedBalance } = useContext(BalanceContext)
 	const [value, setValue] = useState(0)
 	const [approved, setApproved] = useState(true)
 	const [approving, setApproving] = useState(false)
@@ -211,7 +212,19 @@ const Stage = (props) => {
 				provider,
 			).then(n => setStagedBalance(n))
 		}
-		return () => setStagedBalance({})
+		return () => setStagedBalance(ethers.BigNumber.from('0'))
+	}, [wallet.account])
+
+	useEffect(() => {
+		if (wallet.account) {
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+			getBalanceOfBonded(
+				defaults.contracts.root,
+				wallet.account,
+				provider,
+			).then(n => setBondedBalance(n))
+		}
+		return () => setBondedBalance(ethers.BigNumber.from('0'))
 	}, [wallet.account])
 
 	const inc = () => {
@@ -431,6 +444,15 @@ const balanceLow = {
 const stagedBalanceLow = {
 	title: 'No ESD deposited',
 	description: 'There is nothing to bond in the DAO pool.',
+	status: 'error',
+	duration: defaults.toast.duration,
+	isClosable: true,
+}
+
+// eslint-disable-next-line no-unused-vars
+const notFrozenOrLocked = {
+	title: 'Lockup not expired',
+	description: 'You can not deposit until lockup expires.',
 	status: 'error',
 	duration: defaults.toast.duration,
 	isClosable: true,
