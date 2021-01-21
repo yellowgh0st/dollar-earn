@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
 	getERC20Allowance, getERC20BalanceOf, approveERC20, depositDAO, bondDAO, getBalanceOfStaged,
-	getBalanceOfBonded,
+	getBalanceOfBonded, getDaoStatusOf,
 } from '../../common/ethereum'
 import { useWallet } from 'use-wallet'
 import { ethers } from 'ethers'
@@ -24,8 +24,53 @@ const Index = (props) => {
 		error: PropTypes.object,
 	}
 
+	const wallet = useWallet()
 	const { Step } = Steps
-	const [current] = useState(0)
+	const { stagedBalance, setStagedBalance, setBondedBalance } = useContext(BalanceContext)
+	const [current, setCurrent] = useState(0)
+	const [status, setStatus] = useState(0)
+
+	useEffect(() => {
+		if (wallet.account) {
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+			getDaoStatusOf(
+				wallet.account,
+				provider,
+			).then(n => setStatus(n))
+		}
+		return () => setStatus(0)
+	}, [wallet.account])
+
+	useEffect(() => {
+		if (wallet.account) {
+			if (status === 1) setCurrent(1)
+			if (status === 2) setCurrent(2)
+		}
+	}, [wallet.account, status])
+
+	useEffect(() => {
+		if (wallet.account) {
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+			getBalanceOfStaged(
+				defaults.contracts.root,
+				wallet.account,
+				provider,
+			).then(n => setStagedBalance(n))
+		}
+		return () => setStagedBalance(ethers.BigNumber.from('0'))
+	}, [wallet.account])
+
+	useEffect(() => {
+		if (wallet.account) {
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+			getBalanceOfBonded(
+				defaults.contracts.root,
+				wallet.account,
+				provider,
+			).then(n => setBondedBalance(n))
+		}
+		return () => setBondedBalance(ethers.BigNumber.from('0'))
+	}, [wallet.account])
 
 	const iconHold = current === 1 ? <Spinner size='md' /> : null
 
@@ -50,13 +95,13 @@ const Index = (props) => {
 
 			<ContentBox>
 				{current === 0 &&
-					<Bond data={props.data} />
+					<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
 				}
 				{current === 1 &&
-					<Bond data={props.data} />
+					<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
 				}
 				{current === 2 &&
-					<Bond data={props.data}/>
+					<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
 				}
 			</ContentBox>
 		</>
@@ -69,11 +114,12 @@ const Bond = (props) => {
 		data: PropTypes.object.isRequired,
 		loading: PropTypes.bool,
 		error: PropTypes.object,
+		stagedBalance: PropTypes.any,
+		status: PropTypes.number,
 	}
 
 	const wallet = useWallet()
 	const toast = useToast()
-	const { stagedBalance } = useContext(BalanceContext)
 
 	const [bonding, setBonding] = useState(false)
 
@@ -96,7 +142,7 @@ const Bond = (props) => {
 			<Heading textStyle='h2' size='sm'>Bonded token do not always receive rewards.</Heading>
 			<Text align='justify'>ESD rewards for the DAO occur when the Time Weighted Average Price (TWAP)
 				is over $1.00 during an epoch, and coupon redemption has been credited.</Text>
-			<Stage data={props.data}/>
+			<Stage data={props.data} status={props.status}/>
 			<Heading textStyle='h2' size='sm'>Would you like to bond your tokens now?</Heading>
 			<Text as='i'>Bond locks all tokens for 15 epochs.</Text>
 			<Flex maxWidth={bondButtonWidth}
@@ -108,11 +154,11 @@ const Bond = (props) => {
 					rightIcon={arrowIcon}
 					onClick={() => {
 						if (wallet.account) {
-							if (stagedBalance > 0) {
+							if (props.stagedBalance > 0) {
 								setBonding(true)
 								const provider = new ethers.providers.Web3Provider(wallet.ethereum)
 								bondDAO(
-									stagedBalance,
+									props.stagedBalance,
 									provider,
 								).then((tx) => {
 									tx.wait().then(() => {
@@ -126,14 +172,14 @@ const Bond = (props) => {
 									if (err.code === 4001) {
 										toast(denied)
 									}
-									else if (err.error.code === -32603) {
-										toast(stagedBalanceLow)
-									}
 									else {
 										toast(bondingFailed)
 									}
 									setBonding(false)
 								})
+							}
+							else if (props.status === 1) {
+								toast(notFrozenOrLocked)
 							}
 							else {
 								toast(stagedBalanceLow)
@@ -157,12 +203,12 @@ const Stage = (props) => {
 		data: PropTypes.object.isRequired,
 		loading: PropTypes.bool,
 		error: PropTypes.object,
+		status: PropTypes.number,
 	}
 
 	const wallet = useWallet()
 	const toast = useToast()
 	const [esdBalance, setEsdBalance] = useState(0)
-	const { setStagedBalance, setBondedBalance } = useContext(BalanceContext)
 	const [value, setValue] = useState(0)
 	const [approved, setApproved] = useState(true)
 	const [approving, setApproving] = useState(false)
@@ -201,30 +247,6 @@ const Stage = (props) => {
 			)
 		}
 		return () => setEsdBalance(0)
-	}, [wallet.account])
-
-	useEffect(() => {
-		if (wallet.account) {
-			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-			getBalanceOfStaged(
-				defaults.contracts.root,
-				wallet.account,
-				provider,
-			).then(n => setStagedBalance(n))
-		}
-		return () => setStagedBalance(ethers.BigNumber.from('0'))
-	}, [wallet.account])
-
-	useEffect(() => {
-		if (wallet.account) {
-			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-			getBalanceOfBonded(
-				defaults.contracts.root,
-				wallet.account,
-				provider,
-			).then(n => setBondedBalance(n))
-		}
-		return () => setBondedBalance(ethers.BigNumber.from('0'))
 	}, [wallet.account])
 
 	const inc = () => {
@@ -331,7 +353,12 @@ const Stage = (props) => {
 												toast(denied)
 											}
 											else if (err.error.code === -32603) {
-												toast(balanceLow)
+												if (props.status === 1) {
+													toast(notFrozenOrLocked)
+												}
+												else {
+													toast(balanceLow)
+												}
 											}
 											else {
 												toast(stagingFailed)
@@ -449,10 +476,9 @@ const stagedBalanceLow = {
 	isClosable: true,
 }
 
-// eslint-disable-next-line no-unused-vars
 const notFrozenOrLocked = {
-	title: 'Lockup not expired',
-	description: 'You can not deposit until lockup expires.',
+	title: 'Lockup not yet expired',
+	description: 'You can not take this action until lockup expires.',
 	status: 'error',
 	duration: defaults.toast.duration,
 	isClosable: true,
