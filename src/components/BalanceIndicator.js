@@ -48,7 +48,9 @@ export const BalanceIndicator = (props) => {
 					}}>
 						{prettifyCurrency(
 							(ethers.utils.formatEther(
-								stagedBalance.add(bondedBalance),
+								bondedBalance.add(
+									ethers.BigNumber.isBigNumber(stagedBalance) ? stagedBalance : ethers.BigNumber.from('0'),
+								),
 							)),
 							0,
 							2,

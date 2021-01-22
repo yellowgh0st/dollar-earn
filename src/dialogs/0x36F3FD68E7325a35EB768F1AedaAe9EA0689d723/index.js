@@ -27,8 +27,8 @@ const Index = (props) => {
 	const wallet = useWallet()
 	const { Step } = Steps
 	const { stagedBalance, setStagedBalance, setBondedBalance } = useContext(BalanceContext)
-	const [current, setCurrent] = useState(0)
-	const [status, setStatus] = useState(0)
+	const [current, setCurrent] = useState(undefined)
+	const [status, setStatus] = useState(undefined)
 
 	useEffect(() => {
 		if (wallet.account) {
@@ -43,9 +43,11 @@ const Index = (props) => {
 
 	useEffect(() => {
 		if (wallet.account) {
+			if (status === 0) setCurrent(0)
 			if (status === 1) setCurrent(1)
 			if (status === 2) setCurrent(2)
 		}
+		return () => setCurrent(undefined)
 	}, [wallet.account, status])
 
 	useEffect(() => {
@@ -72,7 +74,7 @@ const Index = (props) => {
 		return () => setBondedBalance(ethers.BigNumber.from('0'))
 	}, [wallet.account])
 
-	const iconHold = current === 1 ? <Spinner size='md' /> : null
+	const iconUnbond = current === 1 ? <Spinner size='md' /> : null
 
 	return (
 		<>
@@ -85,23 +87,30 @@ const Index = (props) => {
 			>
 				<Step title='Deposit and Bond'
 					  description={'Bonding is the act of locking your token in order to gain rewards.'} />
-				<Step title='Hold'
-					  icon={iconHold}
-					  description={'You have to wait for lockup expiry.'} />
+				<Step title='Unbond'
+					  icon={iconUnbond}
+					  description={'Unbond your token to make it available for withdrawal.'} />
 				<Step title='Collect'
 					  description={'Get your token back along with the accrued reward.'}
 					  style={{ maxWidth: '227px' }}/>
 			</Steps>
 
 			<ContentBox>
-				{current === 0 &&
-					<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
+				{!wallet.account &&
+						<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
 				}
-				{current === 1 &&
-					<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
-				}
-				{current === 2 &&
-					<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
+				{wallet.account &&
+					<>
+						{current === 0 &&
+							<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
+						}
+						{current === 1 &&
+							<Unbond />
+						}
+						{current === 2 &&
+							<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
+						}
+					</>
 				}
 			</ContentBox>
 		</>
@@ -133,11 +142,11 @@ const Bond = (props) => {
 	return (
 		<>
 			<Heading textStyle='h2' size='lg'>Deposit and Bond</Heading>
-			<Text align='justify'>You are about to deposit and bond ESD token in to the Empty Set Dollar DAO.
+			<Text align='justify'>You&apos;re about to deposit and bond ESD token in to the Empty Set Dollar DAO.
 				Performing either bond or unbond lock up your token for a <b>15 epochs</b>.
 				Bonded tokens must be unbonded before can be withdrawn.
 				You can not take any action before the lockup expires.
-				You will be not able to deposit or withdraw if lockup has not yet expired.
+				You&apos;ll be not able to deposit or withdraw if lockup has not yet expired.
 			</Text>
 			<Heading textStyle='h2' size='sm'>Bonded token do not always receive rewards.</Heading>
 			<Text align='justify'>ESD rewards for the DAO occur when the Time Weighted Average Price (TWAP)
@@ -416,6 +425,17 @@ const Stage = (props) => {
 					}
 				</HStack>
 			</Flex>
+		</>
+	)
+}
+
+const Unbond = () => {
+	return (
+		<>
+			<Heading textStyle='h2' size='lg'>Unbond</Heading>
+			<Text align='justify'>To make your token available for withdrawal, you&apos;ll need to unbond it first.
+				Since your lockup has not expired yet you aren&apos;t able do it. Please come back later.</Text>
+			<Text align='justify'>..or do you just want to bond again?</Text>
 		</>
 	)
 }

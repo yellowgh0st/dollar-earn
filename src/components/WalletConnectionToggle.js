@@ -39,7 +39,7 @@ export const WalletConnectionToggle = (props) => {
 		}
 		return () => {
 			if (wallet.account) {
-				ref.current.getElementsByTagName('div')[0].remove()
+				if (ref.current) ref.current.getElementsByTagName('div')[0].remove()
 				setText(initialText)
 			}
 		}
