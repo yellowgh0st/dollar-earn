@@ -26,29 +26,9 @@ const Index = (props) => {
 
 	const wallet = useWallet()
 	const { Step } = Steps
-	const { stagedBalance, setStagedBalance, setBondedBalance } = useContext(BalanceContext)
+	const { stagedBalance, bondedBalance, setStagedBalance, setBondedBalance } = useContext(BalanceContext)
 	const [current, setCurrent] = useState(undefined)
 	const [status, setStatus] = useState(undefined)
-
-	useEffect(() => {
-		if (wallet.account) {
-			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-			getDaoStatusOf(
-				wallet.account,
-				provider,
-			).then(n => setStatus(n))
-		}
-		return () => setStatus(0)
-	}, [wallet.account])
-
-	useEffect(() => {
-		if (wallet.account) {
-			if (status === 0) setCurrent(0)
-			if (status === 1) setCurrent(1)
-			if (status === 2) setCurrent(2)
-		}
-		return () => setCurrent(undefined)
-	}, [wallet.account, status])
 
 	useEffect(() => {
 		if (wallet.account) {
@@ -74,7 +54,27 @@ const Index = (props) => {
 		return () => setBondedBalance(ethers.BigNumber.from('0'))
 	}, [wallet.account])
 
-	const iconUnbond = current === 1 ? <Spinner size='md' /> : null
+	useEffect(() => {
+		if (wallet.account) {
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+			getDaoStatusOf(
+				wallet.account,
+				provider,
+			).then(n => setStatus(n))
+		}
+		return () => setStatus(0)
+	}, [wallet.account])
+
+	useEffect(() => {
+		if (wallet.account) {
+			if (status === 0) setCurrent(0)
+			if (status === 0 && bondedBalance.gt(0)) setCurrent(1)
+			if (status === 1 && bondedBalance.eq(0)) setCurrent(2)
+		}
+		return () => setCurrent(undefined)
+	}, [wallet.account, status, bondedBalance])
+
+	const iconUnbond = current === 1 && status > 0 ? <Spinner size='md' /> : null
 
 	return (
 		<>
@@ -82,7 +82,6 @@ const Index = (props) => {
 			<p style={{ marginBottom: '3.2rem' }}>Bond your tokens in the Empty Set Dollar DAO to gain rewards.</p>
 
 			<Steps current={current}
-				   className={'test'}
 				   padding='0 0.33rem'
 			>
 				<Step title='Deposit and Bond'
@@ -90,7 +89,7 @@ const Index = (props) => {
 				<Step title='Unbond'
 					  icon={iconUnbond}
 					  description={'Unbond your token to make it available for withdrawal.'} />
-				<Step title='Collect'
+				<Step title='Withdraw'
 					  description={'Get your token back along with the accrued reward.'}
 					  style={{ maxWidth: '227px' }}/>
 			</Steps>
@@ -108,7 +107,7 @@ const Index = (props) => {
 							<Unbond />
 						}
 						{current === 2 &&
-							<Bond data={props.data} stagedBalance={stagedBalance} status={status} />
+							<Withdraw />
 						}
 					</>
 				}
@@ -439,6 +438,16 @@ const Unbond = () => {
 		</>
 	)
 }
+
+const Withdraw = () => {
+	return (
+		<>
+			<Heading textStyle='h2' size='lg'>Withdraw</Heading>
+			<Text align='justify'>..or do you just want to deposit more or bond again?</Text>
+		</>
+	)
+}
+
 
 const walletNotConnected = {
 	title: 'Wallet not connected',
