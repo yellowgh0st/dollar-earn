@@ -68,13 +68,14 @@ const Index = (props) => {
 	useEffect(() => {
 		if (wallet.account) {
 			if (status === 0) setCurrent(0)
-			if (status === 0 && bondedBalance.gt(0)) setCurrent(1)
+			if (bondedBalance.gt(0)) setCurrent(1)
 			if (status === 1 && bondedBalance.eq(0)) setCurrent(2)
 		}
 		return () => setCurrent(undefined)
 	}, [wallet.account, status, bondedBalance])
 
 	const iconUnbond = current === 1 && status > 0 ? <Spinner size='md' /> : null
+	const iconWithdraw = current === 2 && status > 0 ? <Spinner size='md' /> : null
 
 	return (
 		<>
@@ -90,6 +91,7 @@ const Index = (props) => {
 					  icon={iconUnbond}
 					  description={'Unbond your token to make it available for withdrawal.'} />
 				<Step title='Withdraw'
+					  icon={iconWithdraw}
 					  description={'Get your token back along with the accrued reward.'}
 					  style={{ maxWidth: '227px' }}/>
 			</Steps>
