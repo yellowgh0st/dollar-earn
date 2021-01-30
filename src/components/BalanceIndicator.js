@@ -26,9 +26,21 @@ export const BalanceIndicator = (props) => {
 
 	const { stagedBalance, bondedBalance } = useContext(BalanceContext)
 
+	const balance = ethers.BigNumber.isBigNumber(stagedBalance) ?
+		stagedBalance.add(
+			ethers.BigNumber.isBigNumber(bondedBalance) ?
+				bondedBalance :
+				ethers.BigNumber.from('0'),
+		) :
+		ethers.BigNumber.from('0').add(
+			ethers.BigNumber.isBigNumber(bondedBalance) ?
+				bondedBalance :
+				ethers.BigNumber.from('0'),
+		)
+
 	return (
 		<>
-			{!isNaN(stagedBalance) && stagedBalance > 0 || !isNaN(bondedBalance) && bondedBalance > 0 &&
+			{balance.gt(0) &&
 				<Button
 					size='md'
 					minWidth='initial'
@@ -48,9 +60,7 @@ export const BalanceIndicator = (props) => {
 					}}>
 						{prettifyCurrency(
 							(ethers.utils.formatEther(
-								bondedBalance.add(
-									ethers.BigNumber.isBigNumber(stagedBalance) ? stagedBalance : ethers.BigNumber.from('0'),
-								),
+								balance,
 							)),
 							0,
 							2,
